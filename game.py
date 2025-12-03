@@ -50,13 +50,14 @@ class Stats():
         self.increaseSpeed()
 
 class Leveling():
-    def __init__(self, level = 1, evolve = True, stage = 1):
+    def __init__(self, level = 1, evolve = True, stage = 0):
         self.lvl = int(level)
         self.exp = 0
+
         self.droppedExp = (self.lvl * 10000) // 6
         self._nextLvl = (self.lvl * 10000) // 5
     
-        self.evole = evolve
+        self.canEvole = evolve
         self.evolutionStage = stage
     
     def increaseExperience(self, ammount, stats):
@@ -64,15 +65,16 @@ class Leveling():
         while self.exp >= self._nextLvl:
             self.exp -= self._nextLvl
             self.levelUp(stats)
-    
+
     def levelUp(self, stats):
         self.lvl += 1
         self._nextLvl = (self.lvl * 10000) // 5
         self.droppedExp = (self.lvl * 10000) // 6
         stats.increaseAllStats()
 
-class Pokemon(): # Dela upp i mer objekt, stats-objekt, evolution, leveling
-    def __init__(self, name, stats = Stats(), moves = MoveList(Attack("Scratch")), leveling = Leveling()):
+
+class Pokemon(): 
+    def __init__(self, name, stats = Stats(), moves = MoveList(Attack("Scratch")), leveling = Leveling(), nextEvolution = "Abba"):
         self.name = name
 
         self.stats = stats
@@ -83,16 +85,32 @@ class Pokemon(): # Dela upp i mer objekt, stats-objekt, evolution, leveling
         self.baseHp = 10
         self.baseDef = 10
 
+        self.evolution = nextEvolution
+        self.levelToEvolve = 16
+
         self.fainted = False
 
     def __str__(self):
         return (f"{self.name},\nlvl.{self.lvl}")
     
-    # def info(self):
-    #     print(f"Name: {self.name}\nLevel: {self.lvl} exp: {self.exp}/{self._nextLvl} \nHealth: {self.hp}\nAttack: {self.atk}\nDefense: {self.defense}\n")
-
-    def gainExp(self, exp):
-        self.leveling.increaseExperience(exp, self.stats)      
+    def gainExp(self, exp, pokemonList):
+        self.leveling.increaseExperience(exp, self.stats)
+        while self.leveling.lvl >= self.levelToEvolve:
+            userInput = input(f"{self.name} is evolving! y/n?").lower()
+            match userInput:
+                case "y":
+                    updatedEvolution = getEvolutionName(pokemonList)
+                    self.evole(updatedEvolution)
+                case "n":
+                    break
+                case _:
+                    pass
+    
+    def evolve(self, ):
+        self.name = self.evolution
+        self.baseAtk += 1
+        self.baseHp += 1
+        self.baseDef += 1
     
     def attack(self, other, attack): # Rename shit bruh
         other.damaged(self.attacks[attack].attack(self.stats.atk))
@@ -103,6 +121,16 @@ class Pokemon(): # Dela upp i mer objekt, stats-objekt, evolution, leveling
             self.fainted = True
         else:
             pass
+
+def getEvolutionName(pokemonList, pokemonObj):
+    for e in pokemonList:
+        if e.name == pokemonObj.evolution:
+            if pokemonObj.leveling.canEvole == False:
+                return e.name
+            else:
+                return e.evolution
+        else: # Byt till pass?
+            print("bombaclat")
 
 def main():
     p1 = Pokemon("aba")
