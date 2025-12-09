@@ -24,8 +24,8 @@ class Pokemon():
             userInput = input(f"{self.name} is evolving! y/n?").lower()
             match userInput:
                 case "y":
-                    updatedEvolution = getEvolutionName(pokemonList)
-                    self.evole(updatedEvolution)
+                    updatedEvolution = getEvolutionName(pokemonList, self)
+                    self.evolve(updatedEvolution)
                 case "n":
                     break
                 case _:
@@ -33,16 +33,16 @@ class Pokemon():
     
     def evolve(self, newNextEvolution):
         self.name = self.evolution
-        self.baseAtk += 1
-        self.baseHp += 1
-        self.baseDef += 1
+        self.stats.baseAtk += 1
+        self.stats.baseHp += 1
+        self.stats.baseDef += 1
         self.evolution = newNextEvolution
     
     def attack(self, other, attack): # Rename shit bruh
         other.damaged(self.attacks[attack].attack(self.stats.atk))
 
     def damaged(self, dmg):
-        self.stats.decreaseHealth(round((self.defense * 0.001) * dmg))
+        self.stats.decreaseHealth(round((self.stats.defense * 0.001) * dmg))
         if self.stats.hp <= 0:
             self.fainted = True
         else:

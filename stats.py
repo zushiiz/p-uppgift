@@ -5,6 +5,10 @@ class Stats():
         self.defense = defense
         self.spd = speed
 
+        self.baseAtk = 2
+        self.baseHp = 10
+        self.baseDef = 10        
+
         # Dubbelkolla all matte
     def increaseHealth(self):
         self.hp += round(self.baseHp * 1.1) 
