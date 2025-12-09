@@ -16,13 +16,12 @@ def importPokemon(fileName):
     return pokemonList
 
 def main():
-    # p1 = Pokemon("aba")
-    # p2 = Pokemon("bab")
-    # p1.gainExp(10000)
-    # p1.attack(p2, 0)
-    # p1.gainExp(10000000)
-    # print(p1.name)
     l = importPokemon("data.txt")
-    for e in l:
-        print(e)
+    p1 = Pokemon("aba")
+    p2 = Pokemon("bab")
+    p1.gainExp(10000, l)
+    p1.attack(p2, 0)
+    p1.gainExp(10000000, l)
+    print(p1.name)
+
 main()

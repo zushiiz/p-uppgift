@@ -10,10 +10,6 @@ class Pokemon():
         self.leveling = leveling
         self.attacks = moves
 
-        self.baseAtk = 2
-        self.baseHp = 10
-        self.baseDef = 10
-
         self.evolution = nextEvolution
         self.levelToEvolve = 16
 
