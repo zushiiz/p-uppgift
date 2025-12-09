@@ -3,7 +3,7 @@ from stats import Stats
 from leveling import Leveling
 
 class Pokemon(): 
-    def __init__(self, name, stats = Stats(), moves = MoveList(Attack("Scratch")), leveling = Leveling(), nextEvolution = "Abba"):
+    def __init__(self, name, stats = Stats(), moves = MoveList(Attack("Scratch")), leveling = Leveling(), nextEvolution = "Abba"): #Change some default data
         self.name = name
 
         self.stats = stats
@@ -20,7 +20,7 @@ class Pokemon():
         self.fainted = False
 
     def __str__(self):
-        return (f"{self.name},\nlvl.{self.lvl}")
+        return (f"{self.name},\nlvl.{self.leveling.lvl}")
     
     def gainExp(self, exp, pokemonList):
         self.leveling.increaseExperience(exp, self.stats)
