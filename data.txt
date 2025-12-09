@@ -1,0 +1,5 @@
+Pokemon_name,Health,Attack,Defense,Speed,Type,Level,Evolve,Stage,Next_evolution
+Bulbasaur,70,81,75,70,Grass,1,True,0,Ivysaur
+Ivysaur,70,81,75,70,16,Grass,True,1,Venusaur
+Charmander,70,81,75,70,1,Fire,True,0,Charmeleon
+Squirtle,70,81,75,70,1,Water,True,0,Wartortle
