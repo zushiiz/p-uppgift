@@ -13,7 +13,7 @@ class Leveling():
                 self.canEvolve = True
             case _:
                 self.canEvolve = evolve
-        self.evolutionStage = stage
+        self.evolutionStage = int(stage)
     
     def increaseExperience(self, ammount, stats):
         self.exp += ammount
