@@ -20,7 +20,7 @@ class Pokemon():
     
     def gainExp(self, exp, pokemonList):
         self.leveling.increaseExperience(exp, self.stats)
-        while self.leveling.lvl >= self.levelToEvolve:
+        while self.leveling.lvl >= self.levelToEvolve and self.leveling.canEvolve == True:
             userInput = input(f"{self.name} is evolving! y/n?").lower()
             match userInput:
                 case "y":
@@ -51,7 +51,7 @@ class Pokemon():
 def getEvolutionName(pokemonList, pokemonObj):
     for e in pokemonList:
         if e.name == pokemonObj.evolution:
-            if pokemonObj.leveling.canEvole == False:
+            if pokemonObj.leveling.canEvolve == False:
                 return e.name
             else:
                 return e.evolution

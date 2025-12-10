@@ -6,7 +6,7 @@ class Leveling():
         self.droppedExp = (self.lvl * 10000) // 6
         self._nextLvl = (self.lvl * 10000) // 5
     
-        self.canEvole = evolve
+        self.canEvolve = bool(evolve)
         self.evolutionStage = stage
     
     def increaseExperience(self, ammount, stats):
