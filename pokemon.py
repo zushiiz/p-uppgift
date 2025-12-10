@@ -52,11 +52,10 @@ class Pokemon():
 
 def getEvolutionName(pokemonList, pokemonObj):
     for e in pokemonList:
-        print(f"{e.name} is {e.leveling.canEvolve}")
         if e.name == pokemonObj.evolution:
             if e.leveling.canEvolve == False:
                 return e.name, False
             else:
                 return e.evolution, True
         else: # Byt till pass?
-            print("bombaclat")
+            print("Doesn't exist")
