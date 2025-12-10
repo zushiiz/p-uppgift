@@ -1,9 +1,9 @@
 class Stats():
     def __init__(self, health = 70, attack = 81, defense = 75, speed = 70):
-        self.hp = health
-        self.atk = attack
-        self.defense = defense
-        self.spd = speed
+        self.hp = int(health)
+        self.atk = int(attack)
+        self.defense = int(defense)
+        self.spd = int(speed)
 
         self.baseAtk = 2
         self.baseHp = 10
