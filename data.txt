@@ -1,4 +1,4 @@
-Pokemon_name,Health,Attack,Defense,Speed,Type,Level,Evolve,Stage,Next_evolution
+Pokemon_name,Health,Attack,Defense,Speed,Type,Level,Can_evolve,Stage,Next_evolution
 Bulbasaur,70,81,75,70,Grass,1,True,0,Ivysaur
 Ivysaur,70,81,75,70,Grass,16,True,1,Venusaur
 Venusaur,70,81,75,70,Grass,16,False,2,None

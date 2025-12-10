@@ -3,7 +3,7 @@ from stats import Stats
 from leveling import Leveling
 
 class Pokemon(): 
-    def __init__(self, name, stats = Stats(), moves = MoveList(Attack("Scratch")), leveling = Leveling(), nextEvolution = "Abba"): #Change some default data
+    def __init__(self, name, stats = Stats(), moves = MoveList(Attack("Scratch")), leveling = Leveling(False), nextEvolution = "Abba"): #Change some default data
         self.name = name
 
         self.stats = stats
@@ -16,7 +16,7 @@ class Pokemon():
         self.fainted = False
 
     def __str__(self):
-        return (f"{self.name},\nlvl.{self.leveling.lvl}")
+        return (f"{self.name}, lvl:{self.leveling.lvl}")
     
     def gainExp(self, exp, pokemonList):
         self.leveling.increaseExperience(exp, self.stats)
@@ -24,19 +24,21 @@ class Pokemon():
             userInput = input(f"{self.name} is evolving! y/n?").lower()
             match userInput:
                 case "y":
-                    updatedEvolution = getEvolutionName(pokemonList, self)
-                    self.evolve(updatedEvolution)
+                    updatedEvolution, canStillEvolve = getEvolutionName(pokemonList, self)
+                    self.evolve(updatedEvolution, canStillEvolve)
                 case "n":
                     break
                 case _:
                     pass
     
-    def evolve(self, newNextEvolution):
+    def evolve(self, newNextEvolution, canStillEvolve):
         self.name = self.evolution
         self.stats.baseAtk += 1
         self.stats.baseHp += 1
         self.stats.baseDef += 1
-        self.evolution = newNextEvolution
+        self.leveling.evolutionStage += 1        
+        self.leveling.canEvolve = canStillEvolve
+        self.evolution = newNextEvolution      
     
     def attack(self, other, attack): # Rename shit bruh
         other.damaged(self.attacks[attack].attack(self.stats.atk))
@@ -50,10 +52,11 @@ class Pokemon():
 
 def getEvolutionName(pokemonList, pokemonObj):
     for e in pokemonList:
+        print(f"{e.name} is {e.leveling.canEvolve}")
         if e.name == pokemonObj.evolution:
-            if pokemonObj.leveling.canEvolve == False:
-                return e.name
+            if e.leveling.canEvolve == False:
+                return e.name, False
             else:
-                return e.evolution
+                return e.evolution, True
         else: # Byt till pass?
             print("bombaclat")

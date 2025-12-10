@@ -11,7 +11,7 @@ def importPokemon(fileName):
         reader = csv.DictReader(csvFile)
         for object in reader:
             stats = Stats(object["Health"], object["Attack"], object["Defense"], object["Speed"])
-            level = Leveling(object["Level"], object["Evolve"], object["Stage"])
+            level = Leveling(object["Level"], object["Can_evolve"], object["Stage"])
             pokemonList.append(Pokemon(object["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, object["Next_evolution"]))
     return pokemonList
 
@@ -23,5 +23,4 @@ def main():
     p1.attack(p2, 0)
     p1.gainExp(10000000, l)
     print(p1.name)
-
 main()
