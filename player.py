@@ -2,7 +2,7 @@ class Player:
     def __init__(self, username = "Guest", team = ["Empty"]):
         self.name = username
         self.team = team
-        self.firstSlot = team[0]
+        self.activePokemon = team[0]
 
         self.potions = 10
         healingAmount = 100
@@ -13,21 +13,26 @@ class Player:
     def __str__(self):
         return (f"User: {self.name}")
     
-    def playerInput(self, input):
-        match input:
-            case "0":
-                self.attackOption()
-            case "1":
-                self.swapOption()
-            case "2":
-                self.itemsOption()
-            case "3":
-                self.runOption()
-            case _:
+    def attackOption(self):
+        validInput = False
+        while validInput == False:
+            amountOfAttacks = []
+            for i in range(len(self.activePokemon.attacks)):
+                print(f"[{i}] {self.activePokemon.attacks[i]}")
+                amountOfAttacks.append(i)
+                i += 1
+            print(f"[4] Back")
+
+            userInput = input("What would you like to do?:")
+            if userInput == "4":
+                break
+            try:
+                if int(userInput) in amountOfAttacks:
+                    return int(userInput)
+                else:
+                    pass
+            except:
                 pass
-    
-    def attackOption():
-        return None
     
     def swapOption():
         return None    
