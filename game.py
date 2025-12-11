@@ -2,6 +2,8 @@ from pokemon import Pokemon
 from attack import *
 from leveling import Leveling
 from stats import Stats
+from player import Player
+from encounter import Encounter
 import csv
 import random
 
@@ -17,10 +19,11 @@ def importPokemon(fileName):
 
 def main():
     l = importPokemon("data.txt")
-    p1 = l[0]
-    p2 = l[4]
-    p1.gainExp(10000, l)
-    p1.attack(p2, 0)
-    p1.gainExp(10000000, l)
-    print(p1.name)
+    playerTeam = [l[0]]
+    enemy = l[4]
+    player = Player("Me", playerTeam)
+
+    encounter = Encounter(player, enemy)
+    encounter.startEncounter()
+
 main()

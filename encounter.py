@@ -11,7 +11,7 @@ class Encounter:
         self.stop = False
 
     def startEncounter(self):
-        while self.stop != False:
+        while self.stop == False:
             print("Encounter start")
             print(f"You've encountered a wild {self.opponent}!")
             print(f"{self.player} sent out {self.playerPokemon}")
