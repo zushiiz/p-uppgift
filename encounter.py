@@ -29,7 +29,7 @@ class Encounter:
             match userInput:
                 case "0":
                     returnedInput = self.player.attackOption()
-                    print(returnedInput)
+                    self.fight(returnedInput)
                 case "1":
                     self.player.swapAction()
                 case "2":
@@ -40,6 +40,13 @@ class Encounter:
                 case _:
                     pass
     
-    def fight(self):
-        return None
+    def fight(self, chosenAttack):
+        print(self.playerPokemon.stats)
+        print(self.opponent.stats)        
+        print(f"{self.playerPokemon} used {self.playerPokemon.attacks[chosenAttack]}")
+        self.playerPokemon.attack(self.opponent, chosenAttack)
+        print(f"{self.opponent} used {self.opponent.attacks[chosenAttack]}")
+        self.opponent.attack(self.playerPokemon, 0)
+        print(self.playerPokemon.stats)
+        print(self.opponent.stats)
 

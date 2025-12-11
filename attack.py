@@ -17,5 +17,8 @@ class Attack():
         self.name = attackName
         self.atkMul = int(attackMultiplier)
     
+    def __str__(self):
+        return self.name
+
     def attack(self, dmg):
         return self.atkMul * dmg

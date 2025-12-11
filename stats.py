@@ -9,6 +9,9 @@ class Stats():
         self.baseHp = 10
         self.baseDef = 10        
 
+    def __str__(self):
+        return (f"HP: {self.hp}, ATK: {self.atk}, DEF: {self.defense}")
+
         # Dubbelkolla all matte
     def increaseHealth(self):
         self.hp += round(self.baseHp * 1.1) 
