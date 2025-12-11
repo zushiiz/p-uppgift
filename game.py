@@ -25,5 +25,6 @@ def main():
 
     encounter = Encounter(player, enemy)
     encounter.startEncounter()
+    print("Encounter stopped")
 
 main()

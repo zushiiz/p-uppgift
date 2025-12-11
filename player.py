@@ -30,8 +30,10 @@ class Player:
                 if int(userInput) in amountOfAttacks:
                     return int(userInput)
                 else:
+                    print("Please enter a valid digit")
                     pass
             except:
+                print("Please enter a valid digit")
                 pass
     
     def swapOption():

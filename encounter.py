@@ -11,13 +11,13 @@ class Encounter:
         self.stop = False
 
     def startEncounter(self):
+        print("Encounter start")
+        print(f"You've encountered a wild {self.opponent}!")
+        print(f"{self.player} sent out {self.playerPokemon}")        
         while self.stop == False:
-            print("Encounter start")
-            print(f"You've encountered a wild {self.opponent}!")
-            print(f"{self.player} sent out {self.playerPokemon}")
-            self.getActionInput()
+            self.playerAction()
 
-    def getActionInput(self):
+    def playerAction(self):
         validInput = False
         while validInput == False:
             print("[0] Fight \n" \
@@ -28,13 +28,18 @@ class Encounter:
             userInput = input("What would you like to do?:")
             match userInput:
                 case "0":
-                    self.player.attackOption()
+                    returnedInput = self.player.attackOption()
+                    print(returnedInput)
                 case "1":
                     self.player.swapAction()
                 case "2":
                     self.player.itemsAction()
                 case "3":
-                    self.player.runAction()
+                    self.stop = True
+                    break
                 case _:
                     pass
+    
+    def fight(self):
+        return None
 
