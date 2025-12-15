@@ -1,0 +1,61 @@
+from attack import *
+from stats import Stats
+from leveling import Leveling
+
+class Pokemon(): 
+    def __init__(self, name, stats = Stats(), moves = MoveList(Attack("Scratch")), leveling = Leveling(False), nextEvolution = "Abba"): #Change some default data
+        self.name = name
+
+        self.stats = stats
+        self.leveling = leveling
+        self.attacks = moves
+
+        self.evolution = nextEvolution
+        self.levelToEvolve = 16
+
+        self.fainted = False
+
+    def __str__(self):
+        return (f"{self.name}, lvl:{self.leveling.lvl}")
+    
+    def gainExp(self, exp, pokemonList):
+        self.leveling.increaseExperience(exp, self.stats)
+        while self.leveling.lvl >= self.levelToEvolve and self.leveling.canEvolve == True:
+            userInput = input(f"{self.name} is evolving! y/n?").lower()
+            match userInput:
+                case "y":
+                    updatedEvolution, canStillEvolve = getEvolutionName(pokemonList, self)
+                    self.evolve(updatedEvolution, canStillEvolve)
+                case "n":
+                    break
+                case _:
+                    pass
+    
+    def evolve(self, newNextEvolution, canStillEvolve):
+        self.name = self.evolution
+        self.stats.baseAtk += 1
+        self.stats.baseHp += 1
+        self.stats.baseDef += 1
+        self.leveling.evolutionStage += 1        
+        self.leveling.canEvolve = canStillEvolve
+        self.evolution = newNextEvolution      
+    
+    def attack(self, other, attack): # Rename shit bruh
+        other.damaged(self.attacks[attack].attack(self.stats.atk))
+
+    def damaged(self, dmg):
+        self.stats.decreaseHealth(round((self.stats.defense * 0.001) * dmg))
+        if self.stats.hp <= 0:
+            self.fainted = True
+        else:
+            pass
+
+def getEvolutionName(pokemonList, pokemonObj):
+    for e in pokemonList:
+        if e.name == pokemonObj.evolution:
+            if e.leveling.canEvolve == False:
+                return e.name, False
+            else:
+                return e.evolution, True
+        else: # Byt till pass?
+            print("Doesn't exist")
