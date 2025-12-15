@@ -25,7 +25,7 @@ class Player:
 
             userInput = input("What would you like to do?:")
             if userInput == "4":
-                break
+                return int(userInput)
             try:
                 if int(userInput) in amountOfAttacks:
                     return int(userInput)
