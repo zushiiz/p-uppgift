@@ -19,7 +19,7 @@ def importPokemon(fileName):
 
 def main():
     l = importPokemon("data.txt")
-    playerTeam = [l[0]]
+    playerTeam = [l[0], l[3]]
     enemy = l[4]
     player = Player("Me", playerTeam)
 

@@ -22,22 +22,45 @@ class Player:
                 amountOfAttacks.append(i)
                 i += 1
             print(f"[4] Back")
-
-            userInput = input("What would you like to do?:")
-            if userInput == "4":
-                return int(userInput)
             try:
-                if int(userInput) in amountOfAttacks:
-                    return int(userInput)
+                userInput = int(input("What would you like to do?:"))
+                if userInput == 4:
+                    return userInput
+                if userInput in amountOfAttacks:
+                    return userInput
                 else:
                     print("Please enter a valid digit")
                     pass
-            except:
+            except ValueError:
                 print("Please enter a valid digit")
                 pass
     
-    def swapOption():
-        return None    
+    def swapOption(self):
+        validInput = False
+        while validInput == False:
+            amountOfAttacks = []
+            for i in range(len(self.team)):
+                print(f"[{i}] {self.team[i]}")
+                amountOfAttacks.append(i)
+                i += 1
+            print(f"[4] Back")
+            try:
+                userInput = int(input("What would you like to do?:"))
+                if userInput == 4:
+                    return userInput
+            except ValueError:
+                print("Please enter a valid digit")
+                pass
+
+            # try:
+            #     if int(userInput) in amountOfAttacks:
+            #         return int(userInput)
+            #     else:
+            #         print("Please enter a valid digit")
+            #         pass
+            # except:
+            #     print("Please enter a valid digit")
+            #     pass
     
     def itemsOption():
         return None 

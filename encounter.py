@@ -52,14 +52,14 @@ class Encounter:
                                 self.stopEncounter()
                                 break
                             else:
-                                self.player.swapAction()
+                                self.player.swapOption()
                         else:
                             pass
 
                 case "1":
-                    self.player.swapAction()
+                    self.player.swapOption()
                 case "2":
-                    self.player.itemsAction()
+                    self.player.itemsOption()
                 case "3":
                     self.stop = True
                     break
