@@ -26,7 +26,7 @@ class Player:
                 userInput = int(input("What would you like to do?:"))
                 if userInput == 4:
                     return userInput
-                if userInput in amountOfAttacks:
+                elif userInput in amountOfAttacks:
                     return userInput
                 else:
                     print("Please enter a valid digit")
@@ -36,18 +36,27 @@ class Player:
                 pass
     
     def swapOption(self):
-        validInput = False
-        while validInput == False:
-            amountOfAttacks = []
+        while True:
+            pokemonPositions = {}
             for i in range(len(self.team)):
-                print(f"[{i}] {self.team[i]}")
-                amountOfAttacks.append(i)
-                i += 1
+                if self.team[i] == self.activePokemon:
+                    pass
+                else:
+                    print(f"[{i}] {self.team[i]}")
+                    pokemonPositions[i] = self.team[i]
+                    i += 1
             print(f"[4] Back")
             try:
                 userInput = int(input("What would you like to do?:"))
                 if userInput == 4:
                     return userInput
+                elif userInput in pokemonPositions.keys():
+                    print(f"{self.name} swapped out {self.activePokemon} for {pokemonPositions[userInput]}")
+                    self.activePokemon = pokemonPositions[userInput]
+                    return self.activePokemon
+                else:
+                    print("Please enter a valid digit")
+                    pass                   
             except ValueError:
                 print("Please enter a valid digit")
                 pass

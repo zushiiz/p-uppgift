@@ -34,7 +34,7 @@ class Encounter:
                     if returnedInput == 4:
                         pass
                     else:
-                        enemyAttack = self.opponent.attacks[random.randint(0, (len(self.opponent.attacks)-1))]
+                        enemyAttack = random.randint(0, (len(self.opponent.attacks)-1))
                         faintedObject = None
                         fainted = None
                         if self.playerPokemon.stats.spd >= self.opponent.stats.spd:
@@ -51,13 +51,22 @@ class Encounter:
                             if self.checkPlayerStatus():
                                 self.stopEncounter()
                                 break
-                            else:
-                                self.player.swapOption()
+                            else: # Check this logic
+                                self.player.swapOption() 
                         else:
                             pass
 
                 case "1":
-                    self.player.swapOption()
+                    returnedInput = self.player.swapOption()
+                    if returnedInput == 4:
+                        pass
+                    else:
+                        enemyAttack = random.randint(0, (len(self.opponent.attacks)-1))
+                        self.playerPokemon = returnedInput
+                        self.opponent.attack(self.playerPokemon, enemyAttack)
+                        print(f"{self.opponent} used {self.opponent.attacks[enemyAttack]}")
+                        print(self.playerPokemon.stats)
+                        print(self.opponent.stats)
                 case "2":
                     self.player.itemsOption()
                 case "3":
