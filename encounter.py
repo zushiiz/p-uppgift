@@ -52,7 +52,8 @@ class Encounter:
                                 self.stopEncounter()
                                 break
                             else: # Check this logic
-                                self.player.swapOption() 
+                                self.playerPokemon = self.player.swapOption(back = False)
+                                print(f"{self.player} sent out {self.playerPokemon}")
                         else:
                             pass
 
@@ -78,16 +79,17 @@ class Encounter:
     def stopEncounter(self):
         self.stop = True
 
-    def checkPlayerStatus(self):
-        for pokemon in self.player.team:
-            amountFaintedPokemon = 0
-            while amountFaintedPokemon != len(self.player.team):
-                if pokemon.status == True:
-                    amountFaintedPokemon += 1
-                else:
-                    return False
+    def checkPlayerStatus(self): # True if all fainted 
+        amount = 0
+        for e in self.player.team:
+            print(f"{e}, {e.fainted}")
+            if e.fainted == True:
+                amount += 1
+            else:
+                return False
+        if amount == len(self.player.team):
             return True
-
+        
 
     def fight(self, attack1, attack2, object1, object2):
         print(object1.stats)

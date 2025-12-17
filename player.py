@@ -35,7 +35,7 @@ class Player:
                 print("Please enter a valid digit")
                 pass
     
-    def swapOption(self):
+    def swapOption(self, back = True):
         while True:
             pokemonPositions = {}
             for i in range(len(self.team)):
@@ -45,12 +45,15 @@ class Player:
                     print(f"[{i}] {self.team[i]}")
                     pokemonPositions[i] = self.team[i]
                     i += 1
-            print(f"[4] Back")
+            if back == True:
+                print(f"[4] Back")
             try:
                 userInput = int(input("What would you like to do?:"))
-                if userInput == 4:
+                if userInput == 4 and back == True:
                     return userInput
                 elif userInput in pokemonPositions.keys():
+                    if pokemonPositions[userInput].fainted == True:
+                        pass
                     print(f"{self.name} swapped out {self.activePokemon} for {pokemonPositions[userInput]}")
                     self.activePokemon = pokemonPositions[userInput]
                     return self.activePokemon
@@ -61,16 +64,6 @@ class Player:
                 print("Please enter a valid digit")
                 pass
 
-            # try:
-            #     if int(userInput) in amountOfAttacks:
-            #         return int(userInput)
-            #     else:
-            #         print("Please enter a valid digit")
-            #         pass
-            # except:
-            #     print("Please enter a valid digit")
-            #     pass
-    
     def itemsOption():
         return None 
 

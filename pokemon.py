@@ -16,6 +16,8 @@ class Pokemon():
         self.fainted = False
 
     def __str__(self):
+        if self.fainted == True:
+            return (f"{self.name}, fainted")
         return (f"{self.name}, lvl:{self.leveling.lvl}")
     
     def gainExp(self, exp, pokemonList):
