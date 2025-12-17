@@ -53,10 +53,12 @@ class Player:
                     return userInput
                 elif userInput in pokemonPositions.keys():
                     if pokemonPositions[userInput].fainted == True:
+                        print(f"{pokemonPositions[userInput]} has fainted and cannot be sent out")
                         pass
-                    print(f"{self.name} swapped out {self.activePokemon} for {pokemonPositions[userInput]}")
-                    self.activePokemon = pokemonPositions[userInput]
-                    return self.activePokemon
+                    else:
+                        print(f"{self.name} swapped out {self.activePokemon} for {pokemonPositions[userInput]}")
+                        self.activePokemon = pokemonPositions[userInput]
+                        return self.activePokemon
                 else:
                     print("Please enter a valid digit")
                     pass                   

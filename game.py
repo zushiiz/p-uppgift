@@ -28,7 +28,7 @@ def importPokemonByName(fileName, pokemonName):
     with open(fileName, "r", encoding="utf-8") as csvFile:
         reader = csv.DictReader(csvFile)
         for object in reader:
-            if object["Pokemon_name"] == pokemonName:
+            if object["Pokemon_name"].lower() == pokemonName.lower():
                 stats = Stats(object["Health"], object["Attack"], object["Defense"], object["Speed"])
                 level = Leveling(object["Level"], object["Can_evolve"], object["Stage"])
                 return Pokemon(object["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, object["Next_evolution"])
@@ -38,15 +38,15 @@ def main():
     for e in l:
         print(e)
 
-    p = importPokemonByName("data.txt", l[3])
+    p = importPokemonByName("data.txt", l[random.randint(0,len(l))])
     print(p)
-    # playerTeam = [b1, l[3], b2]
-    # enemy = l[4]
-    # player = Player("Me", playerTeam)
+    playerTeam = [importPokemonByName("data.txt", "Bulbasaur"), importPokemonByName("data.txt", "Charmander"), importPokemonByName("data.txt", "Bulbasaur")]
+    enemy = importPokemonByName("data.txt", "Squirtle")
+    player = Player("Me", playerTeam)
 
-    # encounter = Encounter(player, enemy)
-    # encounter.startEncounter()
-    # print("Encounter stopped")
+    encounter = Encounter(player, enemy)
+    encounter.startEncounter()
+    print("Encounter stopped")
 
 
 main()
