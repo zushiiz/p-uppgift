@@ -4,8 +4,7 @@ from leveling import Leveling
 from stats import Stats
 from player import Player
 from encounter import Encounter
-import csv
-import random
+import csv, random, copy
 
 def importPokemon(fileName):
     pokemonList = []
@@ -19,12 +18,21 @@ def importPokemon(fileName):
 
 def main():
     l = importPokemon("data.txt")
-    playerTeam = [l[0], l[3]]
-    enemy = l[4]
-    player = Player("Me", playerTeam)
 
-    encounter = Encounter(player, enemy)
-    encounter.startEncounter()
-    print("Encounter stopped")
+    l2 = copy.deepcopy(l)
+    b1 = l2[0]
+    b2 = l[0]
+    # playerTeam = [b1, l[3], b2]
+    # enemy = l[4]
+    # player = Player("Me", playerTeam)
+
+    # encounter = Encounter(player, enemy)
+    # encounter.startEncounter()
+    # print("Encounter stopped")
+
+    b1.fainted = True
+    print(b1.fainted)
+    print(b2.fainted)
+
 
 main()

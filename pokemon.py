@@ -20,6 +20,9 @@ class Pokemon():
             return (f"{self.name}, fainted")
         return (f"{self.name}, lvl:{self.leveling.lvl}")
     
+    def __deepcopy__(self, memo):
+        return self
+    
     def gainExp(self, exp, pokemonList):
         self.leveling.increaseExperience(exp, self.stats)
         while self.leveling.lvl >= self.levelToEvolve and self.leveling.canEvolve == True:
