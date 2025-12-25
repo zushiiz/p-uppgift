@@ -72,8 +72,12 @@ class Encounter:
                 case "2":
                     returnedInput = self.player.itemsOption()
                     if returnedInput == 1:
-                        # catch pokemon
-                        pass
+                        if self.catchPokemon():
+                            self.stopEncounter()
+                            break
+                        else:
+
+                            pass
                     else:
                         pass
 
@@ -114,4 +118,11 @@ class Encounter:
             else:
                 return None, False
             
-
+    def catchPokemon(self):
+        print(f"{self.player} used Pokeball!")
+        if random.randint(1, 10) == 1: # After caught it doesnt go anywhere for now
+            print(f"{self.opponent} was caught!")
+            return True
+        else:
+            print(f"{self.opponent} escaped!")
+            return False

@@ -82,6 +82,7 @@ class Player:
                         print("You don't have any potions left!")
                         pass
                     case 1 if self.pokeballs > 0:
+                        self.pokeballs -= 1
                         return userInput
                     case 1 if self.pokeballs <= 0:
                         print("You don't have any pokeballs left!")
