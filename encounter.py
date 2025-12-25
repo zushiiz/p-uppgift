@@ -61,13 +61,9 @@ class Encounter:
                     returnedInput = self.player.swapOption()
                     if returnedInput == 6:
                         pass
-                    else:
-                        enemyAttack = random.randint(0, (len(self.opponent.attacks)-1))
+                    else: # check logic for pokemon if it dies instantly, this loops needs to rerun
                         self.playerPokemon = returnedInput
-                        self.opponent.attack(self.playerPokemon, enemyAttack)
-                        print(f"{self.opponent} used {self.opponent.attacks[enemyAttack]}")
-                        print(self.playerPokemon.stats)
-                        print(self.opponent.stats)
+                        self.enemyAttack()
                 
                 case "2":
                     returnedInput = self.player.itemsOption()
@@ -76,10 +72,11 @@ class Encounter:
                             self.stopEncounter()
                             break
                         else:
-
-                            pass
-                    else:
+                            self.enemyAttack()
+                    elif returnedInput == 2:
                         pass
+                    else:
+                        self.enemyAttack()
 
                 case "3":
                     self.stop = True
@@ -126,3 +123,10 @@ class Encounter:
         else:
             print(f"{self.opponent} escaped!")
             return False
+
+    def enemyAttack(self):
+        enemyAttack = random.randint(0, (len(self.opponent.attacks)-1))
+        self.opponent.attack(self.playerPokemon, enemyAttack)
+        print(f"{self.opponent} used {self.opponent.attacks[enemyAttack]}")
+        print(self.playerPokemon.stats)
+        print(self.opponent.stats)
