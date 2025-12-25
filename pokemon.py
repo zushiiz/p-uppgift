@@ -34,7 +34,7 @@ class Pokemon():
                 case "n":
                     break
                 case _:
-                    pass
+                    continue
     
     def evolve(self, newNextEvolution, canStillEvolve):
         self.name = self.evolution
@@ -52,8 +52,6 @@ class Pokemon():
         self.stats.decreaseHealth(round((self.stats.defense * 0.001) * dmg))
         if self.stats.hp <= 0:
             self.fainted = True
-        else:
-            pass
 
 def getEvolutionName(pokemonList, pokemonObj):
     for e in pokemonList:

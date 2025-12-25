@@ -18,10 +18,17 @@ class Encounter:
         print(f"{self.player} sent out {self.playerPokemon}")        
         while self.stop == False:
             self.playerAction()
+    
+    def stopEncounter(self):
+        self.stop = True
+    
+    def nextTurn(self):
+        self.turn += 1
 
     def playerAction(self):
         validInput = False
         while validInput == False:
+            print(f"========================================================================\nTurn: {self.turn}")
             print("[0] Fight \n" \
                   "[1] Pokemon \n" \
                   "[2] Items \n" \
@@ -32,7 +39,7 @@ class Encounter:
                 case "0":
                     returnedInput = self.player.attackOption()
                     if returnedInput == 4:
-                        pass
+                        continue
                     else:
                         enemyAttack = random.randint(0, (len(self.opponent.attacks)-1))
                         faintedObject = None
@@ -55,12 +62,13 @@ class Encounter:
                                 self.playerPokemon = self.player.swapOption(back = False)
                                 print(f"{self.player} sent out {self.playerPokemon}")
                         else:
-                            pass
+                            self.nextTurn()
+                            continue
 
                 case "1":
                     returnedInput = self.player.swapOption()
                     if returnedInput == 6:
-                        pass
+                        continue
                     else: # check logic for pokemon if it dies instantly, this loops needs to rerun
                         self.playerPokemon = returnedInput
                         self.enemyAttack()
@@ -74,18 +82,18 @@ class Encounter:
                         else:
                             self.enemyAttack()
                     elif returnedInput == 2:
-                        pass
+                        continue
                     else:
                         self.enemyAttack()
 
                 case "3":
                     self.stop = True
                     break
+                
                 case _:
-                    pass             
-    
-    def stopEncounter(self):
-        self.stop = True
+                    pass          
+            
+            self.nextTurn()
 
     def checkPlayerStatus(self): # True if all fainted 
         amount = 0

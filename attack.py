@@ -1,7 +1,7 @@
 class MoveList(list):
     def __init__(self, *args):
         super().__init__(args)
-        if len(self) > 4: # Felhantering för fler än 4 moves
+        if len(self) > 4: # Check for better logic, possibly could remove this
             return -1
         else:
             pass

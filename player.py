@@ -27,17 +27,17 @@ class Player:
                     return userInput
                 else:
                     print("Please enter a valid digit")
-                    pass
+                    continue
             except ValueError:
                 print("Please enter a valid digit")
-                pass
+                continue
     
     def swapOption(self, back = True): #Back is backbutton [4], back button is also hardcoded right now, need to test with more pokemon, alt. change it to b instad of 4
         while True:
             pokemonPositions = {}
             for i in range(len(self.team)):
                 if self.team[i] == self.activePokemon:
-                    pass
+                    continue
                 else:
                     print(f"[{i}] {self.team[i]}")
                     pokemonPositions[i] = self.team[i]
@@ -51,17 +51,17 @@ class Player:
                 elif userInput in pokemonPositions.keys():
                     if pokemonPositions[userInput].fainted == True:
                         print(f"{pokemonPositions[userInput]} has fainted and cannot be sent out")
-                        pass
+                        continue
                     else:
                         print(f"{self.name} swapped out {self.activePokemon} for {pokemonPositions[userInput]}")
                         self.activePokemon = pokemonPositions[userInput]
                         return self.activePokemon
                 else:
                     print("Please enter a valid digit")
-                    pass                   
+                    continue                   
             except ValueError:
                 print("Please enter a valid digit")
-                pass
+                continue
 
     def itemsOption(self): # Max ammount is hardcoded for now
         while True:
@@ -74,27 +74,25 @@ class Player:
                 match userInput:
                     case 0 if self.potions > 0:
                         returnedInput = self.healPokemon()
-                        if returnedInput == 6:
-                            pass
-                        else:
+                        if returnedInput != 6:
                             break
                     case 0 if self.potions <= 0:
                         print("You don't have any potions left!")
-                        pass
+                        continue
                     case 1 if self.pokeballs > 0:
                         self.pokeballs -= 1
                         return userInput
                     case 1 if self.pokeballs <= 0:
                         print("You don't have any pokeballs left!")
-                        pass
+                        continue
                     case 2:
                         return userInput
                     case _:
                         print("Please enter a valid digit")
-                        pass                                        
+                        continue                                        
             except ValueError:
                 print("Please enter a valid digit")
-                pass                
+                continue                
     
     def healPokemon(self):
         while True:
@@ -116,10 +114,10 @@ class Player:
                     break
                 else:
                     print("Please enter a valid digit")
-                    pass                    
+                    continue                    
             except ValueError:
                 print("Please enter a valid digit")
-                pass
+                continue
 
 
 
