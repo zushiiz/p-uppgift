@@ -69,7 +69,7 @@ class Encounter:
                         print(self.playerPokemon.stats)
                         print(self.opponent.stats)
                 case "2":
-                    self.player.itemsOption()
+                    returnedInput = self.player.itemsOption()
                 case "3":
                     self.stop = True
                     break

@@ -14,8 +14,7 @@ class Player:
         return (f"User: {self.name}")
     
     def attackOption(self):
-        validInput = False
-        while validInput == False:
+        while True:
             amountOfAttacks = []
             for i in range(len(self.activePokemon.attacks)):
                 print(f"[{i}] {self.activePokemon.attacks[i]}")
@@ -35,7 +34,7 @@ class Player:
                 print("Please enter a valid digit")
                 pass
     
-    def swapOption(self, back = True):
+    def swapOption(self, back = True): #Back is backbutton [4], back button is also hardcoded right now, need to test with more pokemon, alt. change it to b instad of 4
         while True:
             pokemonPositions = {}
             for i in range(len(self.team)):
@@ -66,8 +65,13 @@ class Player:
                 print("Please enter a valid digit")
                 pass
 
-    def itemsOption():
-        return None 
+    def itemsOption(self): # Max ammount is hardcoded for now
+        while True:
+            print(f"[1] Healing potions: {self.potions}/10")
+            print(f"[2] Pokeballs: {self.pokeballs}/10")
+            print("[4] Back")
+
+
 
     def runOption():
         return None     
