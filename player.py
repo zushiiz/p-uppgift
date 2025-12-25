@@ -28,7 +28,7 @@ class Player:
                 else:
                     print("Please enter a valid digit")
                     continue
-            except TypeError:
+            except ValueError:
                 print("Please enter a digit")
                 continue
     
@@ -59,7 +59,7 @@ class Player:
                 else:
                     print("Please enter a valid digit")
                     continue                   
-            except TypeError:
+            except ValueError:
                 print("Please enter a digit")
                 continue
 
@@ -115,7 +115,7 @@ class Player:
                 else:
                     print("Please enter a valid digit")
                     continue                    
-            except TypeError:
+            except ValueError:
                 print("Please enter a digit")
                 continue
 
