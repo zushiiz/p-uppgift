@@ -28,8 +28,8 @@ class Player:
                 else:
                     print("Please enter a valid digit")
                     continue
-            except ValueError:
-                print("Please enter a valid digit")
+            except TypeError:
+                print("Please enter a digit")
                 continue
     
     def swapOption(self, back = True): #Back is backbutton [4], back button is also hardcoded right now, need to test with more pokemon, alt. change it to b instad of 4
@@ -59,8 +59,8 @@ class Player:
                 else:
                     print("Please enter a valid digit")
                     continue                   
-            except ValueError:
-                print("Please enter a valid digit")
+            except TypeError:
+                print("Please enter a digit")
                 continue
 
     def itemsOption(self): # Max ammount is hardcoded for now
@@ -115,8 +115,8 @@ class Player:
                 else:
                     print("Please enter a valid digit")
                     continue                    
-            except ValueError:
-                print("Please enter a valid digit")
+            except TypeError:
+                print("Please enter a digit")
                 continue
 
 
