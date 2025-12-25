@@ -10,7 +10,7 @@ class Encounter:
         self.opponent = opponent
         self.turn = 1
         self.stop = False
-        self.opponentStatus = self.opponent.fainted
+        self.playerWin = False
 
     def startEncounter(self):
         print("Encounter start")
@@ -53,6 +53,7 @@ class Encounter:
                             self.stopEncounter()
                             print(f"{faintedObject} fainted!")
                             print(faintedObject.stats)
+                            self.playerWin = True
                             break
                         elif faintedObject == self.playerPokemon and fainted == True:
                             if self.checkPlayerStatus():
@@ -91,7 +92,7 @@ class Encounter:
                     break
                 
                 case _:
-                    pass          
+                    continue          
             
             self.nextTurn()
 
