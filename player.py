@@ -5,10 +5,8 @@ class Player:
         self.activePokemon = team[0]
 
         self.potions = 10
-        healingAmount = 100
 
         self.pokeballs = 10
-        catchRate = 50
     
     def __str__(self):
         return (f"User: {self.name}")
@@ -67,12 +65,60 @@ class Player:
 
     def itemsOption(self): # Max ammount is hardcoded for now
         while True:
-            print(f"[1] Healing potions: {self.potions}/10")
-            print(f"[2] Pokeballs: {self.pokeballs}/10")
-            print("[3] Back")
+            print(f"[0] Healing potions: {self.potions}/10")
+            print(f"[1] Pokeballs: {self.pokeballs}/10")
+            print("[2] Back")
 
             try:
+                userInput = int(input("What would you like to do?:"))
+                match userInput:
+                    case 0 if self.potions > 0:
+                        returnedInput = self.healPokemon()
+                        if returnedInput == 6:
+                            pass
+                        else:
+                            break
+                    case 0 if self.potions <= 0:
+                        print("You don't have any potions left!")
+                        pass
+                    case 1 if self.pokeballs > 0:
+                        return userInput
+                    case 1 if self.pokeballs <= 0:
+                        print("You don't have any pokeballs left!")
+                        pass
+                    case 2:
+                        return userInput
+                    case _:
+                        print("Please enter a valid digit")
+                        pass                                        
+            except ValueError:
+                print("Please enter a valid digit")
+                pass                
+    
+    def healPokemon(self):
+        while True:
+            pokemonPositions = {}
+            for i in range(len(self.team)):
+                print(f"[{i}] {self.team[i]}")
+                pokemonPositions[i] = self.team[i]
+                i += 1
+            print("[6] Back")
 
+            try:
+                userInput = int(input("Which pokemon do you want to heal?"))
+                if userInput == 6:
+                    return userInput
+                elif userInput in pokemonPositions.keys() and pokemonPositions[userInput].fainted == False:
+                    pokemonPositions[userInput].stats.increaseHealth(100) #Healing amount hardcoded
+                    self.potions -= 1
+                    print(f"After healing {pokemonPositions[userInput].stats}")
+                    break
+                else:
+                    print("Please enter a valid digit")
+                    pass                    
+            except ValueError:
+                print("Please enter a valid digit")
+                pass
 
 
 
