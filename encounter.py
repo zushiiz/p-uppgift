@@ -68,8 +68,15 @@ class Encounter:
                         print(f"{self.opponent} used {self.opponent.attacks[enemyAttack]}")
                         print(self.playerPokemon.stats)
                         print(self.opponent.stats)
+                
                 case "2":
                     returnedInput = self.player.itemsOption()
+                    if returnedInput == 1:
+                        # catch pokemon
+                        pass
+                    else:
+                        pass
+
                 case "3":
                     self.stop = True
                     break
@@ -89,7 +96,6 @@ class Encounter:
                 return False
         if amount == len(self.player.team):
             return True
-        
 
     def fight(self, attack1, attack2, object1, object2):
         print(object1.stats)
@@ -108,5 +114,4 @@ class Encounter:
             else:
                 return None, False
             
-
 
