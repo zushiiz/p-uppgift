@@ -1,9 +1,11 @@
 class Stats():
     def __init__(self, health = 70, attack = 81, defense = 75, speed = 70):
-        self.hp = int(health)
+        self.MaxHp = int(health)
         self.atk = int(attack)
         self.defense = int(defense)
         self.spd = int(speed)
+
+        self.hp = self.MaxHp
 
         self.baseAtk = 2
         self.baseHp = 10
@@ -13,11 +15,16 @@ class Stats():
         return (f"HP: {self.hp}, ATK: {self.atk}, DEF: {self.defense}")
 
         # Dubbelkolla all matte
-    def increaseHealth(self):
-        self.hp += round(self.baseHp * 1.1) 
+    def increaseHealth(self, amount):
+        self.hp += amount
 
-    def decreaseHealth(self, ammount):
-         self.hp -= ammount
+    def decreaseHealth(self, amount):
+         self.hp -= amount
+
+    def increaseMaxHealth(self):
+        self.MaxHp += round(self.baseHp * 1.1) 
+        if self.hp > 0:
+            self.hp = self.MaxHp
     
     def increaseAttack(self):
         self.atk += round(self.baseAtk * 1.02)
@@ -29,7 +36,7 @@ class Stats():
         self.spd = round(self.spd * 1.02) 
 
     def increaseAllStats(self):
-        self.increaseHealth()
+        self.increaseMaxHealth()
         self.increaseAttack()
         self.increaseDefense()
         self.increaseSpeed()
