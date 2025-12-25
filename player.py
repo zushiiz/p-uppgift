@@ -45,10 +45,10 @@ class Player:
                     pokemonPositions[i] = self.team[i]
                     i += 1
             if back == True:
-                print(f"[4] Back")
+                print(f"[6] Back")
             try:
                 userInput = int(input("What would you like to do?:"))
-                if userInput == 4 and back == True:
+                if userInput == 6 and back == True:
                     return userInput
                 elif userInput in pokemonPositions.keys():
                     if pokemonPositions[userInput].fainted == True:
@@ -69,7 +69,10 @@ class Player:
         while True:
             print(f"[1] Healing potions: {self.potions}/10")
             print(f"[2] Pokeballs: {self.pokeballs}/10")
-            print("[4] Back")
+            print("[3] Back")
+
+            try:
+
 
 
 

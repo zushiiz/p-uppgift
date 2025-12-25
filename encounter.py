@@ -59,7 +59,7 @@ class Encounter:
 
                 case "1":
                     returnedInput = self.player.swapOption()
-                    if returnedInput == 4:
+                    if returnedInput == 6:
                         pass
                     else:
                         enemyAttack = random.randint(0, (len(self.opponent.attacks)-1))
