@@ -5,7 +5,7 @@ from stats import Stats
 from player import Player
 from encounter import Encounter
 from map import Map
-import csv, random, copy
+import csv, random
 
 # def importPokemon(fileName):
 #     pokemonList = []
@@ -34,8 +34,20 @@ def importPokemonByName(fileName, pokemonName):
                 level = Leveling(object["Level"], object["Can_evolve"], object["Stage"])
                 return Pokemon(object["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, object["Next_evolution"])
 
-def mapUI():
-    pass
+def mainLoop():
+    map = Map()
+    while True:
+        Map().userInterface()
+
+def generatePokemon(player, pokemonNames):
+    playerLevels = []
+    for pokemon in player.team:
+        playerLevels.append(pokemon.level.lvl)
+    playerLevels.sort()
+    level = random.randint(playerLevels[0], len(playerLevels)-1)
+    nameIndex = random.randint(0, len(pokemonNames)-1)
+
+    enemy = importPokemonByName("data.txt", pokemonNames[nameIndex])
 
 def main():
     l = importPokemonNames("data.txt")

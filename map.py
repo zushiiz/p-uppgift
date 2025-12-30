@@ -1,3 +1,4 @@
+import random
 class Map: # [y][x] coordinate type
     def __init__(self, height = 10, width = 15):
         self.h = height
@@ -33,7 +34,8 @@ class Map: # [y][x] coordinate type
             print("Cannot move there")
 
     def userInterface(self):
-        while True:
+        i = 0
+        while i != 1:
             print(self)
             try:
                 userInput = int(input("Move\n" \
@@ -54,10 +56,7 @@ class Map: # [y][x] coordinate type
                     case _:
                         print("Invalid input")
                         continue        
-
+                i = random.randint(1, 5)
             except ValueError:
                 print("Invalid input")
                 continue
-
-m = Map()
-m.userInterface()
