@@ -3,7 +3,7 @@ from stats import Stats
 from leveling import Leveling
 
 class Pokemon(): 
-    def __init__(self, name, stats = Stats(), moves = MoveList(Attack("Scratch")), leveling = Leveling(False), nextEvolution = "Abba"): #Change some default data
+    def __init__(self, name, stats = Stats(), moves = MoveList(Attack("Scratch")), leveling = Leveling(False), nextEvolution = "a"): #Change some default data
         self.name = name
 
         self.stats = stats
@@ -20,16 +20,13 @@ class Pokemon():
             return (f"{self.name}, fainted")
         return (f"{self.name}, lvl:{self.leveling.lvl}")
     
-    def __deepcopy__(self, memo):
-        return self
-    
-    def gainExp(self, exp, pokemonList):
+    def gainExp(self, exp, updatedEvolution, canStillEvolve):
         self.leveling.increaseExperience(exp, self.stats)
         while self.leveling.lvl >= self.levelToEvolve and self.leveling.canEvolve == True:
             userInput = input(f"{self.name} is evolving! y/n?").lower()
             match userInput:
                 case "y":
-                    updatedEvolution, canStillEvolve = getEvolutionName(pokemonList, self)
+                    # updatedEvolution, canStillEvolve = getEvolutionName(pokemonObj, self)
                     self.evolve(updatedEvolution, canStillEvolve)
                 case "n":
                     break
@@ -52,13 +49,3 @@ class Pokemon():
         self.stats.decreaseHealth(round((self.stats.defense * 0.001) * dmg))
         if self.stats.hp <= 0:
             self.fainted = True
-
-def getEvolutionName(pokemonList, pokemonObj):
-    for e in pokemonList:
-        if e.name == pokemonObj.evolution:
-            if e.leveling.canEvolve == False:
-                return e.name, False
-            else:
-                return e.evolution, True
-        else: # Byt till pass?
-            print("Doesn't exist")

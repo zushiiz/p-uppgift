@@ -37,7 +37,8 @@ class MainGame:
             print(encounterInstance.playerWin)
             if encounterInstance.playerWin == True:
                 expGained = encounterInstance.opponent.leveling.droppedExp
-                self.player.activePokemon.gainExp(10000000, self.masterList)
+                updatedEvoultion, canStillEvolve = getEvolutionName(self.masterList, self.player.activePokemon, self.file)
+                self.player.activePokemon.gainExp(10000000, updatedEvoultion, canStillEvolve)
                 print(self.player.activePokemon.leveling)
             else:
                 continue
@@ -128,6 +129,17 @@ def importPokemonByName(fileName, pokemonName, level = None):
                 stats = Stats(object["Health"], object["Attack"], object["Defense"], object["Speed"])
                 level = Leveling(level, object["Can_evolve"], object["Stage"])
                 return Pokemon(object["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, object["Next_evolution"])
+            
+def getEvolutionName(pokemonList, pokemonObj, file):
+    for e in pokemonList:
+        if e == pokemonObj.evolution:
+            p = importPokemonByName(file, e)
+            if p.leveling.canEvolve == False:
+                return e, False
+            else:
+                return p.evolution, True
+        else: # Byt till pass?
+            print("Doesn't exist")
 
 # def mainLoop():
 #     map = Map()
