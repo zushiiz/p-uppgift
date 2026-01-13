@@ -15,6 +15,9 @@ class Leveling():
                 self.canEvolve = evolve
         self.evolutionStage = int(stage)
     
+    def __str__(self):
+        return f"{self.exp}/{self._nextLvl}"
+
     def increaseExperience(self, ammount, stats):
         self.exp += ammount
         while self.exp >= self._nextLvl:
