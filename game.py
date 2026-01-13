@@ -38,7 +38,7 @@ class MainGame:
             if encounterInstance.playerWin == True:
                 expGained = encounterInstance.opponent.leveling.droppedExp
                 updatedEvoultion, canStillEvolve = getEvolutionName(self.masterList, self.player.activePokemon, self.file)
-                self.player.activePokemon.gainExp(10000000, updatedEvoultion, canStillEvolve)
+                self.player.activePokemon.gainExp(expGained, updatedEvoultion, canStillEvolve)
                 print(self.player.activePokemon.leveling)
             else:
                 continue

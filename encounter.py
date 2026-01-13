@@ -126,8 +126,9 @@ class Encounter:
             
     def catchPokemon(self):
         print(f"{self.player} used Pokeball!")
-        if random.randint(1, 10) == 1: # After caught it doesnt go anywhere for now
+        if random.randint(1, 5) == 1:
             print(f"{self.opponent} was caught!")
+            self.player.team.append(self.opponent) # Måste lägga cap
             return True
         else:
             print(f"{self.opponent} escaped!")
