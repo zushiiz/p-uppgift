@@ -34,6 +34,13 @@ class MainGame:
             enemy = self.generateRandomEnemy()
             encounterInstance = Encounter(self.player, enemy)
             encounterInstance.startEncounter()
+            print(encounterInstance.playerWin)
+            if encounterInstance.playerWin == True:
+                expGained = encounterInstance.opponent.leveling.droppedExp
+                self.player.activePokemon.gainExp(10000000, self.masterList)
+                print(self.player.activePokemon.leveling)
+            else:
+                continue
 
     def startMenu(self):
         while True:
