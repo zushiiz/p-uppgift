@@ -1,0 +1,5 @@
+Pokemon_name,Health,Attack,Defense,Speed,Type,Level,Can_evolve,Stage,Next_evolution
+Bulbasaur,70,81,75,70,Grass/Poison,1,True,0,Ivysaur
+Pikachu,70,81,75,70,Electric,25,False,0,Raichu
+Vaporeon,70,81,75,70,Water,42,False,0,None
+Charizard,500,500,75,70,Fire/Flying,50,False,0,None
