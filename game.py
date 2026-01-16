@@ -75,11 +75,12 @@ class MainGame:
                         break
 
                     case 1:
-                        userFile = input("OBS! It has to be a .txt file with correct csv Format and in the correct directory!\n" \
-                        "Input the full filename: ")
+                        # userFile = input("OBS! It has to be a .txt file with correct csv Format and in the correct directory!\n" \
+                        # "Input the full filename: ")
+                        userFile = "sampleteam.txt"
                         team = importPlayerTeam(userFile)
                         username = input("Input username:")
-                        self.player = Player(username, userFile)
+                        self.player = Player(username, team)
                         self.run = True
                         break
                     case 2:
@@ -97,7 +98,7 @@ def importPlayerTeam(fileName):
         for object in reader:
 
             stats = Stats(object["Health"], object["Attack"], object["Defense"], object["Speed"])
-            level = Leveling(level, object["Can_evolve"], object["Stage"])
+            level = Leveling(object["Level"], object["Can_evolve"], object["Stage"])
             playerTeam.append(Pokemon(object["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, object["Next_evolution"]))
     return playerTeam
 
@@ -136,10 +137,9 @@ def getEvolutionName(pokemonList, pokemonObj, file):
             p = importPokemonByName(file, e)
             if p.leveling.canEvolve == False:
                 return e, False
-            else:
-                return p.evolution, True
-        else: # Byt till pass?
-            print("Doesn't exist")
+            else: # Exists
+                break
+    return e, True
 
 # def mainLoop():
 #     map = Map()
