@@ -39,6 +39,11 @@ class Stats():
     def increaseSpeed(self):
         self.spd = round(self.spd * 1.1) 
 
+    def increaseAllBaseStats(self):
+        self.baseHp += 3
+        self.baseAtk += 2
+        self.baseDef += 1
+
     def increaseAllStats(self, pokemonLevel):
         self.increaseMaxHealth(pokemonLevel)
         self.increaseAttack(pokemonLevel)
