@@ -5,8 +5,8 @@ class Stats():
         self.baseDef = int(defense)
         self.spd = int(speed)      
         
-        self.MaxHp = self.baseHp
-        self.hp = self.MaxHp
+        self.maxHp = self.baseHp
+        self.hp = self.maxHp
 
         self.atk = self.baseAtk
         self.defense = self.baseDef
@@ -17,14 +17,16 @@ class Stats():
         # Dubbelkolla all matte
     def increaseHealth(self, amount):
         self.hp += amount
+        if self.hp > self.maxHp:
+            self.hp = self.maxHp
 
     def decreaseHealth(self, amount):
          self.hp -= amount
 
     def increaseMaxHealth(self, lvl):
-        self.MaxHp = self.baseHp + round(lvl * 1.6) 
+        self.maxHp = self.baseHp + round(lvl * 1.6) 
         if self.hp > 0:
-            self.hp = self.MaxHp
+            self.hp = self.maxHp
         else:
             self.hp = 0
     

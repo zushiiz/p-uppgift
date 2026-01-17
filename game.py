@@ -127,7 +127,7 @@ def exportPlayerTeam(playerTeam, imported = False):
                     # pokemon.stats.baseAtk
                     # pokemon.stats.baseDef
                     # pokemon.stats.spd
-                    # typing = "n/a"
+                    typing = "n/a"
                     # pokemon.leveling.lvl
                     # pokemon.leveling.canEvolve
                     # pokemon.leveling.stage
@@ -185,21 +185,7 @@ def getEvolutionName(pokemonList, pokemonObj, file):
 #     enemy = importPokemonByName("data.txt", pokemonNames[nameIndex])
 
 def main():
-    # l = importPokemonNames("data.txt")
-    # for e in l:
-    #     print(e)
-
-    # # p = importPokemonByName("data.txt", l[random.randint(0,len(l)-1)])
-    # # print(p)
-    # playerTeam = [importPokemonByName("data.txt", "Bulbasaur"), importPokemonByName("data.txt", "Charmander"), importPokemonByName("data.txt", "Bulbasaur")]
-    # enemy = importPokemonByName("data.txt", "Squirtle")
-    # player = Player("Me", playerTeam)
-
-    # encounter = Encounter(player, enemy)
-    # encounter.startEncounter()
-    # print("Encounter stopped")
     game = MainGame("data.txt")
     game.startMenu()
-
 
 main()
