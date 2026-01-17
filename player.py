@@ -119,7 +119,21 @@ class Player:
                 print("Please enter a digit")
                 continue
 
-
-
-    def runOption():
-        return None     
+    def changeActivePokemon(self):
+        print("Choose active Pokemon!")
+        pokemonPositions = {}
+        for i in range(len(self.team)):
+            print(f"[{i}] {self.team[i].name}")
+            pokemonPositions[i] = self.team[i]
+            i += 1
+        while True:
+            try:
+                userInput = int(input(":"))
+                if userInput in pokemonPositions.keys():
+                    self.team.insert(0, self.team.pop(userInput))
+                    self.activePokemon = self.team[0]
+                    break
+                else:
+                    continue
+            except ValueError:
+                continue
