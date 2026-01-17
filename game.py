@@ -41,9 +41,8 @@ class MainGame:
                     print(encounterInstance.playerWin)
                     if encounterInstance.playerWin == True:
                         expGained = encounterInstance.opponent.leveling.droppedExp
-                        updatedEvoultion, canStillEvolve = getEvolutionName(self.masterList, self.player.activePokemon, self.file)
-                        self.player.activePokemon.gainExp(10000000, updatedEvoultion, canStillEvolve)
-                        self.player.activePokemon.stats.increaseAllStats(self.player.activePokemon.leveling.lvl)
+                        nextEvolutions = getEvolutionName(self.masterList, self.player.activePokemon, self.file)
+                        self.player.activePokemon.gainExp(expGained, nextEvolutions)
                         print(self.player.activePokemon.leveling)
                     else:
                         continue
@@ -154,14 +153,16 @@ def importPokemonByName(fileName, pokemonName, level = None):
                 return Pokemon(object["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, object["Next_evolution"])
             
 def getEvolutionName(pokemonList, pokemonObj, file):
+    evolutionDict = {}
     for e in pokemonList:
         if e == pokemonObj.evolution:
             p = importPokemonByName(file, e)
-            if p.leveling.canEvolve == False:
-                return e, False
+            evolutionDict[p.name] = True            
+            if p.leveling.canEvolve == True:
+                evolutionDict[importPokemonByName(file, p.evolution).name] = False
             else:
                 break
-    return e, True
+    return evolutionDict
 
 def main():
     game = MainGame("data.txt")
