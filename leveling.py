@@ -1,5 +1,5 @@
 class Leveling():
-    def __init__(self, level = 1, evolve = True, stage = 0):
+    def __init__(self, level = 1, evolve = True, evolutionStage = 0):
         self.lvl = int(level)
         self.exp = 0
 
@@ -13,7 +13,7 @@ class Leveling():
                 self.canEvolve = True
             case _:
                 self.canEvolve = evolve
-        self.evolutionStage = int(stage)
+        self.stage = int(evolutionStage)
     
     def __str__(self):
         return f"{self.exp}/{self._nextLvl}"

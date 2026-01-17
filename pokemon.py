@@ -3,7 +3,7 @@ from stats import Stats
 from leveling import Leveling
 
 class Pokemon(): 
-    def __init__(self, name, stats = Stats(), moves = MoveList(Attack("Scratch")), leveling = Leveling(False), nextEvolution = "a"): #Change some default data
+    def __init__(self, name, stats = Stats(), moves = MoveList(Attack("Scratch")), leveling = Leveling(), nextEvolution = "a"): #Change some default data
         self.name = name
 
         self.stats = stats

@@ -32,19 +32,25 @@ class MainGame:
 
     def mainGameLoop(self):
         while self.run:
-            self.map.userInterface()
-            enemy = self.generateRandomEnemy()
-            encounterInstance = Encounter(self.player, enemy)
-            encounterInstance.startEncounter()
-            print(encounterInstance.playerWin)
-            if encounterInstance.playerWin == True:
-                expGained = encounterInstance.opponent.leveling.droppedExp
-                updatedEvoultion, canStillEvolve = getEvolutionName(self.masterList, self.player.activePokemon, self.file)
-                self.player.activePokemon.gainExp(expGained, updatedEvoultion, canStillEvolve)
-                self.player.activePokemon.stats.increaseAllStats(self.player.activePokemon.leveling.lvl)
-                print(self.player.activePokemon.leveling)
-            else:
-                continue
+            x = self.map.userInterface()
+            match x:
+                case 0:
+                    print("Team")
+                case 1:
+                    print("Save")
+                case _:
+                    enemy = self.generateRandomEnemy()
+                    encounterInstance = Encounter(self.player, enemy)
+                    encounterInstance.startEncounter()
+                    print(encounterInstance.playerWin)
+                    if encounterInstance.playerWin == True:
+                        expGained = encounterInstance.opponent.leveling.droppedExp
+                        updatedEvoultion, canStillEvolve = getEvolutionName(self.masterList, self.player.activePokemon, self.file)
+                        self.player.activePokemon.gainExp(expGained, updatedEvoultion, canStillEvolve)
+                        self.player.activePokemon.stats.increaseAllStats(self.player.activePokemon.leveling.lvl)
+                        print(self.player.activePokemon.leveling)
+                    else:
+                        continue
 
     def startMenu(self):
         while True:
@@ -106,21 +112,27 @@ def importPlayerTeam(fileName):
             playerTeam.append(Pokemon(object["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, object["Next_evolution"]))
     return playerTeam
 
-def exportPlayerTeam(imported = False):
+def exportPlayerTeam(playerTeam, imported = False):
     while True:
-        fileMode = ""
-        print("Saving current team\n" \
-              "[0] New Save")
-        if imported:
-            print("[1] Save current")
-        print("[2] Back")
-        userInput = input("What would you like to do?")
-        match userInput:
-            case "0":
 
-        userFile = input("Input team name, avoid special characters such as '. , ? !' or numbers '1 2 3 4' :")
+        userFile = input("Avoid special characters such as '. , ? !' or numbers '1 2 3 4'\n"\
+                         "Entering previous file name will override old saves\n"\
+                         "Input team name:")
         if userFile.isalpha():
-            with open
+            with open(userFile + ".csv" , "w", encoding="utf-8") as newFile:
+                newFile.write("Pokemon_name,Health,Attack,Defense,Speed,Type,Level,Can_evolve,Stage,Next_evolution" + "\n")
+                for pokemon in playerTeam:
+                    # pokemon.name
+                    # pokemon.stats.baseHp
+                    # pokemon.stats.baseAtk
+                    # pokemon.stats.baseDef
+                    # pokemon.stats.spd
+                    # typing = "n/a"
+                    # pokemon.leveling.lvl
+                    # pokemon.leveling.canEvolve
+                    # pokemon.leveling.stage
+                    data = f"{pokemon.name},{pokemon.stats.baseHp},{pokemon.stats.baseAtk},{pokemon.stats.baseDef},{pokemon.stats.spd},{typing},{pokemon.leveling.lvl},{pokemon.leveling.canEvolve},{pokemon.leveling.stage}\n"
+                    newFile.write(data)
         elif userFile == "2":
             break
         else:
