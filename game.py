@@ -16,6 +16,8 @@ class MainGame:
         self.player = None
         self.map = Map()
         self.run = False
+
+        self.importedTeam = False
          
     
     def generateRandomEnemy(self):
@@ -82,6 +84,7 @@ class MainGame:
                         team = importPlayerTeam(userFile)
                         username = input("Input username:")
                         self.player = Player(username, team)
+                        self.importedTeam = True
                         self.run = True
                         break
                     case 2:
@@ -103,15 +106,27 @@ def importPlayerTeam(fileName):
             playerTeam.append(Pokemon(object["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, object["Next_evolution"]))
     return playerTeam
 
-# def importPokemon(fileName):
-#     pokemonList = []
-#     with open(fileName, "r", encoding="utf-8") as csvFile:
-#         reader = csv.DictReader(csvFile)
-#         for object in reader:
-#             stats = Stats(object["Health"], object["Attack"], object["Defense"], object["Speed"])
-#             level = Leveling(object["Level"], object["Can_evolve"], object["Stage"])
-#             pokemonList.append(Pokemon(object["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, object["Next_evolution"]))
-#     return pokemonList
+def exportPlayerTeam(imported = False):
+    while True:
+        fileMode = ""
+        print("Saving current team\n" \
+              "[0] New Save")
+        if imported:
+            print("[1] Save current")
+        print("[2] Back")
+        userInput = input("What would you like to do?")
+        match userInput:
+            case "0":
+
+        userFile = input("Input team name, avoid special characters such as '. , ? !' or numbers '1 2 3 4' :")
+        if userFile.isalpha():
+            with open
+        elif userFile == "2":
+            break
+        else:
+            print("Please enter valid input!")
+    
+
 
 def importPokemonNames(fileName):
     pokemonList = []
