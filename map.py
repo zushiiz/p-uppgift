@@ -43,6 +43,8 @@ class Map: # [y][x] coordinate type
                                       "[1] Down\n" \
                                       "[2] Left\n" \
                                       "[3] Right\n" \
+                                      "[4] Team\n" \
+                                      "[5] Save and quit\n" \
                                       ":"))
                 match userInput:
                     case 0:
@@ -53,6 +55,10 @@ class Map: # [y][x] coordinate type
                         self.movePlayer(self.playerY, self.playerX-1)
                     case 3:
                         self.movePlayer(self.playerY, self.playerX+1)
+                    case 4:
+                        return 0
+                    case 5:
+                        return 1
                     case _:
                         print("Invalid input")
                         continue        
@@ -60,3 +66,4 @@ class Map: # [y][x] coordinate type
             except ValueError:
                 print("Invalid input")
                 continue
+            return None
