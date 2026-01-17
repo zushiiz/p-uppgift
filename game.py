@@ -12,7 +12,7 @@ class MainGame:
         self.file = fileName
         self.masterList = importPokemonNames(self.file) # All pokemon names
 
-        playerTeam = [importPokemonByName(self.file, "Bulbasaur"), importPokemonByName(self.file, "Charmander"), importPokemonByName(self.file, "Bulbasaur")]
+        #playerTeam = [importPokemonByName(self.file, "Bulbasaur"), importPokemonByName(self.file, "Charmander"), importPokemonByName(self.file, "Bulbasaur")]
         self.player = None
         self.map = Map()
         self.run = False
@@ -39,6 +39,7 @@ class MainGame:
                 expGained = encounterInstance.opponent.leveling.droppedExp
                 updatedEvoultion, canStillEvolve = getEvolutionName(self.masterList, self.player.activePokemon, self.file)
                 self.player.activePokemon.gainExp(expGained, updatedEvoultion, canStillEvolve)
+                self.player.activePokemon.stats.increaseAllStats(self.player.activePokemon.leveling.lvl)
                 print(self.player.activePokemon.leveling)
             else:
                 continue

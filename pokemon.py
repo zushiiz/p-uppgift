@@ -8,6 +8,8 @@ class Pokemon():
 
         self.stats = stats
         self.leveling = leveling
+        if self.leveling.lvl > 1:
+            self.stats.increaseAllStats(self.leveling.lvl)
         self.attacks = moves
 
         self.evolution = nextEvolution
@@ -21,12 +23,11 @@ class Pokemon():
         return (f"{self.name}, lvl:{self.leveling.lvl}")
     
     def gainExp(self, exp, updatedEvolution, canStillEvolve):
-        self.leveling.increaseExperience(exp, self.stats)
+        self.leveling.increaseExperience(exp)
         while self.leveling.lvl >= self.levelToEvolve and self.leveling.canEvolve == True:
             userInput = input(f"{self.name} is evolving! y/n?").lower()
             match userInput:
                 case "y":
-                    # updatedEvolution, canStillEvolve = getEvolutionName(pokemonObj, self)
                     self.evolve(updatedEvolution, canStillEvolve)
                 case "n":
                     break
@@ -35,9 +36,6 @@ class Pokemon():
     
     def evolve(self, newNextEvolution, canStillEvolve):
         self.name = self.evolution
-        self.stats.baseAtk += 1
-        self.stats.baseHp += 1
-        self.stats.baseDef += 1
         self.leveling.evolutionStage += 1        
         self.leveling.canEvolve = canStillEvolve
         self.evolution = newNextEvolution      

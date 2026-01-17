@@ -1,15 +1,15 @@
 class Stats():
     def __init__(self, health = 70, attack = 81, defense = 75, speed = 70):
-        self.MaxHp = int(health)
-        self.atk = int(attack)
-        self.defense = int(defense)
-        self.spd = int(speed)
-
+        self.baseAtk = int(attack)
+        self.baseHp = int(health)
+        self.baseDef = int(defense)
+        self.spd = int(speed)      
+        
+        self.MaxHp = self.baseHp
         self.hp = self.MaxHp
 
-        self.baseAtk = 2
-        self.baseHp = 10
-        self.baseDef = 10        
+        self.atk = self.baseAtk
+        self.defense = self.baseDef
 
     def __str__(self):
         return (f"HP: {self.hp}, ATK: {self.atk}, DEF: {self.defense}")
@@ -21,22 +21,24 @@ class Stats():
     def decreaseHealth(self, amount):
          self.hp -= amount
 
-    def increaseMaxHealth(self):
-        self.MaxHp += round(self.baseHp * 1.1) 
+    def increaseMaxHealth(self, lvl):
+        self.MaxHp = self.baseHp + round(lvl * 1.6) 
         if self.hp > 0:
             self.hp = self.MaxHp
+        else:
+            self.hp = 0
     
-    def increaseAttack(self):
-        self.atk += round(self.baseAtk * 1.02)
+    def increaseAttack(self, lvl):
+        self.atk = self.baseAtk + round(lvl * 1.5)
 
-    def increaseDefense(self):
-        self.defense += round(self.baseDef * 1.02) 
+    def increaseDefense(self, lvl):
+        self.defense = self.baseDef + round(lvl * 1.4)
 
     def increaseSpeed(self):
-        self.spd = round(self.spd * 1.02) 
+        self.spd = round(self.spd * 1.1) 
 
-    def increaseAllStats(self):
-        self.increaseMaxHealth()
-        self.increaseAttack()
-        self.increaseDefense()
+    def increaseAllStats(self, pokemonLevel):
+        self.increaseMaxHealth(pokemonLevel)
+        self.increaseAttack(pokemonLevel)
+        self.increaseDefense(pokemonLevel)
         self.increaseSpeed()

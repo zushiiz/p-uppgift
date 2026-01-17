@@ -18,14 +18,13 @@ class Leveling():
     def __str__(self):
         return f"{self.exp}/{self._nextLvl}"
 
-    def increaseExperience(self, ammount, stats):
+    def increaseExperience(self, ammount):
         self.exp += ammount
         while self.exp >= self._nextLvl:
             self.exp -= self._nextLvl
-            self.levelUp(stats)
+            self.levelUp()
 
-    def levelUp(self, stats):
+    def levelUp(self):
         self.lvl += 1
         self._nextLvl = (self.lvl * 10000) // 5
         self.droppedExp = (self.lvl * 10000) // 6
-        stats.increaseAllStats()
