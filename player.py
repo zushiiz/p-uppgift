@@ -73,8 +73,8 @@ class Player:
                 userInput = int(input("What would you like to do?:"))
                 match userInput:
                     case 0 if self.potions > 0:
-                        returnedInput = self.healPokemon()
-                        if returnedInput != 6:
+                        playerActionIndex = self.healPokemon()
+                        if playerActionIndex != 6:
                             break
                     case 0 if self.potions <= 0:
                         print("You don't have any potions left!")

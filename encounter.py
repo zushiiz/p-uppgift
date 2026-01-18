@@ -37,17 +37,17 @@ class Encounter:
             userInput = input("What would you like to do?:")
             match userInput:
                 case "0":
-                    returnedInput = self.player.attackOption()
-                    if returnedInput == 4:
+                    playerActionIndex = self.player.attackOption()
+                    if playerActionIndex == 4:
                         continue
                     else:
                         enemyAttack = random.randint(0, (len(self.opponent.attacks)-1))
                         faintedObject = None
                         fainted = None
                         if self.playerPokemon.stats.spd >= self.opponent.stats.spd:
-                            faintedObject, fainted = self.fight(returnedInput, enemyAttack, self.playerPokemon, self.opponent)
+                            faintedObject, fainted = self.fight(playerActionIndex, enemyAttack, self.playerPokemon, self.opponent)
                         else:
-                            faintedObject, fainted = self.fight(enemyAttack, returnedInput, self.opponent, self.playerPokemon)                     
+                            faintedObject, fainted = self.fight(enemyAttack, playerActionIndex, self.opponent, self.playerPokemon)                     
 
                         if faintedObject == self.opponent and fainted == True:
                             self.stopEncounter()
@@ -67,22 +67,22 @@ class Encounter:
                             continue
 
                 case "1":
-                    returnedInput = self.player.swapOption()
-                    if returnedInput == 6:
+                    playerActionIndex = self.player.swapOption()
+                    if playerActionIndex == 6:
                         continue
                     else: # check logic for pokemon if it dies instantly, this loops needs to rerun
-                        self.playerPokemon = returnedInput
+                        self.playerPokemon = playerActionIndex
                         self.enemyAttack()
                 
                 case "2":
-                    returnedInput = self.player.itemsOption()
-                    if returnedInput == 1:
+                    playerActionIndex = self.player.itemsOption()
+                    if playerActionIndex == 1:
                         if self.catchPokemon():
                             self.stopEncounter()
                             break
                         else:
                             self.enemyAttack()
-                    elif returnedInput == 2:
+                    elif playerActionIndex == 2:
                         continue
                     else:
                         self.enemyAttack()

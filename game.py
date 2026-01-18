@@ -6,7 +6,16 @@ from player import Player
 from encounter import Encounter
 from map import Map
 import csv, random
+"""
+Notes:
+Jolteon and Flareon doesnt exist
+Bit unbalanced in base stats
+No type advantage
+No IV farming
+No team amount cap
+Moves are hardcoded to only scratch for now
 
+"""
 class MainGame:
     def __init__(self, fileName):
         self.file = fileName
@@ -18,8 +27,8 @@ class MainGame:
     
     def generateRandomEnemy(self):
         playerLevels = []
-        for pokemon in self.player.team:
-            playerLevels.append(pokemon.leveling.lvl)
+        for pokemonObj in self.player.team:
+            playerLevels.append(pokemonObj.leveling.lvl)
         playerLevels.sort()
         level = random.randint(playerLevels[0], playerLevels[len(playerLevels)-1])
         nameIndex = random.randint(0, len(self.masterList)-1)
@@ -28,8 +37,8 @@ class MainGame:
 
     def mainGameLoop(self):
         while self.run:
-            x = self.map.userInterface()
-            match x:
+            menuActionIndex = self.map.userInterface()
+            match menuActionIndex:
                 case 0:
                     self.player.changeActivePokemon()
                 case 1:
@@ -47,7 +56,7 @@ class MainGame:
                     else:
                         continue
 
-    def startMenu(self):
+    def startMenu(self): # Could split into more functions/methods, also there is no back option from case 0 and 1
         while True:
             print("Welcome!")
             print("[0] New Game\n" \
@@ -79,14 +88,12 @@ class MainGame:
                         break
 
                     case 1:
-                        userFile = input("OBS! It has to be a file with correct csv Format and in the correct directory!\n" \
-                        "Input the FULL filename: ")
-                        team = importPlayerTeam(userFile)
+                        team = importPlayerTeam()
                         username = input("Input username:")
                         self.player = Player(username, team)
-                        self.importedTeam = True
                         self.run = True
                         break
+                    
                     case 2:
                         break
             
@@ -95,16 +102,22 @@ class MainGame:
                 continue
         self.mainGameLoop()
 
-def importPlayerTeam(fileName):
-    playerTeam = []
-    with open(fileName, "r", encoding="utf-8") as csvFile:
-        reader = csv.DictReader(csvFile)
-        for object in reader:
-
-            stats = Stats(object["Health"], object["Attack"], object["Defense"], object["Speed"])
-            level = Leveling(object["Level"], object["Can_evolve"], object["Stage"])
-            playerTeam.append(Pokemon(object["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, object["Next_evolution"]))
-    return playerTeam
+def importPlayerTeam():
+    while True:
+        userFile = input("OBS! It has to be a file with correct csv Format and in the correct directory!\n" \
+                        "Input the FULL filename: ")
+        playerTeam = []
+        try:
+            with open(userFile, "r", encoding="utf-8") as csvFile:
+                reader = csv.DictReader(csvFile)
+                for pokemonData in reader:
+                    stats = Stats(pokemonData["Health"], pokemonData["Attack"], pokemonData["Defense"], pokemonData["Speed"])
+                    level = Leveling(pokemonData["Level"], pokemonData["Can_evolve"], pokemonData["Stage"])
+                    playerTeam.append(Pokemon(pokemonData["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, pokemonData["Next_evolution"]))
+            return playerTeam
+        except FileNotFoundError:
+            print("File not found")
+            continue
 
 def exportPlayerTeam(playerTeam):
     while True:
@@ -115,7 +128,7 @@ def exportPlayerTeam(playerTeam):
         if userFile.isalpha():
             with open(userFile + ".csv" , "w", encoding="utf-8") as newFile:
                 newFile.write("Pokemon_name,Health,Attack,Defense,Speed,Type,Level,Can_evolve,Stage,Next_evolution" + "\n")
-                for pokemon in playerTeam:
+                for pokeObj in playerTeam:
                     # pokemon.name
                     # pokemon.stats.baseHp
                     # pokemon.stats.baseAtk
@@ -125,7 +138,7 @@ def exportPlayerTeam(playerTeam):
                     # pokemon.leveling.lvl
                     # pokemon.leveling.can
                     # pokemon.leveling.stage
-                    data = f"{pokemon.name},{pokemon.stats.baseHp},{pokemon.stats.baseAtk},{pokemon.stats.baseDef},{pokemon.stats.spd},{typing},{pokemon.leveling.lvl},{pokemon.leveling.canEvolve},{pokemon.leveling.stage}\n"
+                    data = f"{pokeObj.name},{pokeObj.stats.baseHp},{pokeObj.stats.baseAtk},{pokeObj.stats.baseDef},{pokeObj.stats.spd},{typing},{pokeObj.leveling.lvl},{pokeObj.leveling.canEvolve},{pokeObj.leveling.stage}\n"
                     newFile.write(data)
                 return False
         elif userFile == "2":
@@ -137,29 +150,29 @@ def importPokemonNames(fileName):
     pokemonList = []
     with open(fileName, "r", encoding="utf-8") as csvFile:
         reader = csv.DictReader(csvFile)
-        for object in reader:
-            pokemonList.append(object["Pokemon_name"])
+        for pokemonData in reader:
+            pokemonList.append(pokemonData["Pokemon_name"])
     return pokemonList
 
 def importPokemonByName(fileName, pokemonName, level = None):
     with open(fileName, "r", encoding="utf-8") as csvFile:
         reader = csv.DictReader(csvFile)
-        for object in reader:
-            if object["Pokemon_name"].lower() == pokemonName.lower():
+        for pokemonData in reader:
+            if pokemonData["Pokemon_name"].lower() == pokemonName.lower():
                 if level == None:
-                    level = object["Level"]
-                stats = Stats(object["Health"], object["Attack"], object["Defense"], object["Speed"])
-                level = Leveling(level, object["Can_evolve"], object["Stage"])
-                return Pokemon(object["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, object["Next_evolution"])
+                    level = pokemonData["Level"]
+                stats = Stats(pokemonData["Health"], pokemonData["Attack"], pokemonData["Defense"], pokemonData["Speed"])
+                level = Leveling(level, pokemonData["Can_evolve"], pokemonData["Stage"])
+                return Pokemon(pokemonData["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, pokemonData["Next_evolution"])
             
 def getEvolutionName(pokemonList, pokemonObj, file):
     evolutionDict = {}
-    for e in pokemonList:
-        if e == pokemonObj.evolution:
-            p = importPokemonByName(file, e)
-            evolutionDict[p.name] = True            
-            if p.leveling.canEvolve == True:
-                evolutionDict[importPokemonByName(file, p.evolution).name] = False
+    for pokemonName in pokemonList:
+        if pokemonName == pokemonObj.evolution:
+            pokemonObj = importPokemonByName(file, pokemonName)
+            evolutionDict[pokemonObj.name] = True
+            if pokemonObj.leveling.canEvolve == True:
+                evolutionDict[importPokemonByName(file, pokemonObj.evolution).name] = False
             else:
                 break
     return evolutionDict
