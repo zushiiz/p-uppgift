@@ -5,7 +5,9 @@ from stats import Stats
 from player import Player
 from encounter import Encounter
 from map import Map
+from gui import GUI
 import csv, random
+
 """
 Notes:
 Jolteon and Flareon doesnt exist
@@ -14,6 +16,7 @@ No type advantage
 No IV farming
 No team amount cap
 Moves are hardcoded to only scratch for now
+Currently there is no error handling for faulty file format
 
 """
 class MainGame:
@@ -24,7 +27,8 @@ class MainGame:
         self.player = None
         self.map = Map()
         self.run = False
-    
+        self.gui = GUI()
+
     def generateRandomEnemy(self):
         playerLevels = []
         for pokemonObj in self.player.team:
@@ -57,11 +61,20 @@ class MainGame:
                         continue
 
     def startMenu(self): # Could split into more functions/methods, also there is no back option from case 0 and 1
+
+        print("Welcome!")
+        self.gui.write_line("Welcome!")
+
+        for i in range(3):
+            self.gui.create_buttons(i)
+            i += 1
+
         while True:
-            print("Welcome!")
+
             print("[0] New Game\n" \
                   "[1] Load Game\n" \
                   "[2] Quit Game")
+            
             try:
                 userInput = int(input("What would you like to do?:"))
                 match userInput:
@@ -178,7 +191,9 @@ def getEvolutionName(pokemonList, pokemonObj, file):
     return evolutionDict
 
 def main():
-    game = MainGame("data.txt")
+
+    game = MainGame("data.txt") # Hardcoded :thumbs_up:
     game.startMenu()
+    game.gui.root.mainloop()
 
 main()
