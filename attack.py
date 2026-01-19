@@ -1,7 +1,7 @@
-class MoveList(list):
-    def __init__(self, *args):
+class MoveList(list):   # Inherits from list-class
+    def __init__(self, *args): # *args make it possible to initialize the class with any amount of args as elements
         super().__init__(args)
-        if len(self) > 4: # Check for better logic, possibly could remove this
+        if len(self) > 4: # Temporary gate, this only sends error, no solution. Probably not gonna fix it for now since I'm not adding more date for attacks
             return -1
         else:
             pass

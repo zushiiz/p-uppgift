@@ -1,9 +1,13 @@
 import random
-class Map: # [y][x] coordinate type
+class Map: 
+    # [y][x] coordinate type
+
     def __init__(self, height = 10, width = 15):
         self.h = height
         self.w = width
         self.mapIcon = "o"
+
+        # Creates a grid made of lists in the given width and height
         self.grid = [[self.mapIcon for _ in range(self.w)] for _ in range(self.h)]
 
         self.playerIcon = "p"
@@ -19,10 +23,9 @@ class Map: # [y][x] coordinate type
             visualizedMap += "\n"
         return visualizedMap
     
+    # Method used to move the player to a certain x and y
     def movePlayer(self, y, x):
         try:
-            print(y)
-            print(x)
             if y < 0 or x < 0:
                 print("Cannot move there")
             else:
