@@ -7,7 +7,9 @@ class GUI():
         window_width = 800
         window_height = 500
         self.root.geometry(f"{window_width}x{window_height}")
-        left_frame_width = window_width//3
+        left_frame_width = window_width//3 
+
+        self.root.bind("<Return>", lambda event: self.action_button.invoke())
 
         # Terminal 
         terminal_frame =  tk.Frame(
@@ -87,33 +89,5 @@ class GUI():
     
     def create_input_field(self):
         self.clear_action_frame()
-        self.input_var = tk.stringVar()
-        self.input_field = tk.Entry(
-            self._actions_frame,
-            textvariable=self.input_var)
+        self.input_field = tk.Entry(self._actions_frame)
         self.input_field.pack()
-        self.action_button.config(command = lambda: self.input_var.get())
-        
-
-    # def create_listbox(self, contents):
-    #     for widget in self._actions_frame.winfo_children():
-    #         widget.destroy()
-    #     self._actions_frame
-    #     actions_box = tk.Listbox(
-    #         self._actions_frame,
-    #         width=25)
-    #     actions_box.pack()
-    #     for i in contents:
-    #         actions_box.insert(tk.END, str(i))
-
-    # def create_buttons(self, buttonContents = []):
-    #     for i in range(len(buttonContents)):
-    #         tk.Button(
-    #             self._button_frame, 
-    #             text=f"{buttonContents[i]}",
-    #             width=25,
-    #             command = lambda a=i: returnIndex(a)
-    #         ).pack()
-
-# def returnIndex(i):
-#     return i
