@@ -27,6 +27,7 @@ class MainGame:
         self.masterList = importPokemonNames(self.file) # All pokemon names
 
         self.player = None
+        self.username = None
         self.map = Map()
         self.run = False
         self.gui = GUI()
@@ -66,55 +67,12 @@ class MainGame:
 
         print("Welcome!")
 
-        self.gui.write_line("Welcome!")
+        self.gui.write_line(f"Welcome {self.username}!")
+
         options = ["New Game", "Load Game", "Quit Game"]
         self.gui.update_listbox(options)
         self.gui.action_button.config(command = lambda:self.startMenuActions(self.gui.actions_box))        
         
-        # while True:
-
-        #     print("[0] New Game\n" \
-        #           "[1] Load Game\n" \
-        #           "[2] Quit Game")
-            
-        #     try:
-        #         userInput = int(input("What would you like to do?:"))
-        #         match userInput:
-        #             case 0:
-        #                 username = input("Input username:")
-        #                 print("Pick your starter!\n"\
-        #                       "[0] Bulbasaur\n"\
-        #                       "[1] Squirtle\n"\
-        #                       "[2] Charmander\n") # No way back, might change later
-                        
-        #                 playerStarter = input(":")
-        #                 playerTeam = []
-        #                 match playerStarter: # loop ts
-        #                     case "0":
-        #                         playerTeam.append(importPokemonByName(self.file, "Bulbasaur"))
-        #                         self.player = Player(username, playerTeam)
-        #                     case "1":
-        #                         playerTeam.append(importPokemonByName(self.file, "Squirtle"))
-        #                         self.player = Player(username, playerTeam)
-        #                     case "2":
-        #                         playerTeam.append(importPokemonByName(self.file, "Charmander"))
-        #                         self.player = Player(username, playerTeam)
-        #                 self.run = True
-        #                 break
-
-        #             case 1:
-        #                 team = importPlayerTeam()
-        #                 username = input("Input username:")
-        #                 self.player = Player(username, team)
-        #                 self.run = True
-        #                 break
-                    
-        #             case 2:
-        #                 break
-            
-        #     except ValueError:
-        #         print("Enter int") #Change later
-        #         continue
         self.mainGameLoop()
 
     def startMenuActions(self, list_box):     
@@ -130,10 +88,11 @@ class MainGame:
                 self.gui.action_button.config(command = lambda:self.newGameMenu(self.gui.actions_box))
 
             case 1:
-                team = importPlayerTeam()
-                username = input("Input username:")
-                self.player = Player(username, team)
-                self.run = True
+                # team = importPlayerTeam()
+                # username = input("Input username:")
+                # self.player = Player(username, team)
+                # self.run = True
+                self.loadGameMenu()
 
     def newGameMenu(self, list_box):
         userInput = int(list_box.curselection()[0])
@@ -156,15 +115,26 @@ class MainGame:
         self.run = True
         self.mainGameLoop()
 
-    def loadGameMenu(self, list_box):
-        userInput = int(list_box.curselection()[0])
+    def loadGameMenu(self):
+        # userInput = int(list_box.curselection()[0])
+        self.gui.write_line("OBS! It has to be a file with correct csv Format and in the correct directory!\n" \
+                            "Input the FULL filename/path in the field")
         self.gui.create_input_field()
+        self.gui.action_button.config(command = lambda: self.importPlayerTeam(self.gui.input_field.get()))
 
-def importPlayerTeam():
-    while True:
-        userFile = input("OBS! It has to be a file with correct csv Format and in the correct directory!\n" \
-                        "Input the FULL filename: ")
+    def start(self):
+        self.gui.write_line("Enter a username")
+        self.gui.create_input_field()
+        self.gui.action_button.config(command = lambda: self._storeUsername(self.gui.input_field.get()))
+    
+    def _storeUsername(self, input):
+        self.username = input
+        self.startMenu()
+        print(self.username)
+
+    def importPlayerTeam(self, userFile):
         playerTeam = []
+        print(userFile)
         try:
             with open(userFile, "r", encoding="utf-8") as csvFile:
                 reader = csv.DictReader(csvFile)
@@ -172,10 +142,12 @@ def importPlayerTeam():
                     stats = Stats(pokemonData["Health"], pokemonData["Attack"], pokemonData["Defense"], pokemonData["Speed"])
                     level = Leveling(pokemonData["Level"], pokemonData["Can_evolve"], pokemonData["Stage"])
                     playerTeam.append(Pokemon(pokemonData["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, pokemonData["Next_evolution"]))
-            return playerTeam
+            self.player = Player(self.username, playerTeam)
+            self.run = True
+            self.mainGameLoop()
         except FileNotFoundError:
             print("File not found")
-            continue
+
 
 def exportPlayerTeam(playerTeam):
     while True:
@@ -238,7 +210,7 @@ def getEvolutionName(pokemonList, pokemonObj, file):
 def main():
 
     game = MainGame("data.txt") # Hardcoded :thumbs_up:
-    game.startMenu()
+    game.start()
     game.gui.root.mainloop()
 
 main()
