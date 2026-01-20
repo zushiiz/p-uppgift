@@ -18,6 +18,8 @@ No team amount cap
 Moves are hardcoded to only scratch for now
 Currently there is no error handling for faulty file format
 
+NEED TO CHECK THE MATH ON TS
+
 """
 class MainGame:
     def __init__(self, fileName):
@@ -63,57 +65,100 @@ class MainGame:
     def startMenu(self): # Could split into more functions/methods, also there is no back option from case 0 and 1
 
         print("Welcome!")
+
         self.gui.write_line("Welcome!")
+        options = ["New Game", "Load Game", "Quit Game"]
+        self.gui.update_listbox(options)
+        self.gui.action_button.config(command = lambda:self.startMenuActions(self.gui.actions_box))        
+        
+        # while True:
 
-        for i in range(3):
-            self.gui.create_buttons(i)
-            i += 1
-
-        while True:
-
-            print("[0] New Game\n" \
-                  "[1] Load Game\n" \
-                  "[2] Quit Game")
+        #     print("[0] New Game\n" \
+        #           "[1] Load Game\n" \
+        #           "[2] Quit Game")
             
-            try:
-                userInput = int(input("What would you like to do?:"))
-                match userInput:
-                    case 0:
-                        username = input("Input username:")
-                        print("Pick your starter!\n"\
-                              "[0] Bulbasaur\n"\
-                              "[1] Squirtle\n"\
-                              "[2] Charmander\n") # No way back, might change later
+        #     try:
+        #         userInput = int(input("What would you like to do?:"))
+        #         match userInput:
+        #             case 0:
+        #                 username = input("Input username:")
+        #                 print("Pick your starter!\n"\
+        #                       "[0] Bulbasaur\n"\
+        #                       "[1] Squirtle\n"\
+        #                       "[2] Charmander\n") # No way back, might change later
                         
-                        playerStarter = input(":")
-                        playerTeam = []
-                        match playerStarter:
-                            case "0":
-                                playerTeam.append(importPokemonByName(self.file, "Bulbasaur"))
-                                self.player = Player(username, playerTeam)
-                            case "1":
-                                playerTeam.append(importPokemonByName(self.file, "Squirtle"))
-                                self.player = Player(username, playerTeam)
-                            case "2":
-                                playerTeam.append(importPokemonByName(self.file, "Charmander"))
-                                self.player = Player(username, playerTeam)
-                        self.run = True
-                        break
+        #                 playerStarter = input(":")
+        #                 playerTeam = []
+        #                 match playerStarter: # loop ts
+        #                     case "0":
+        #                         playerTeam.append(importPokemonByName(self.file, "Bulbasaur"))
+        #                         self.player = Player(username, playerTeam)
+        #                     case "1":
+        #                         playerTeam.append(importPokemonByName(self.file, "Squirtle"))
+        #                         self.player = Player(username, playerTeam)
+        #                     case "2":
+        #                         playerTeam.append(importPokemonByName(self.file, "Charmander"))
+        #                         self.player = Player(username, playerTeam)
+        #                 self.run = True
+        #                 break
 
-                    case 1:
-                        team = importPlayerTeam()
-                        username = input("Input username:")
-                        self.player = Player(username, team)
-                        self.run = True
-                        break
+        #             case 1:
+        #                 team = importPlayerTeam()
+        #                 username = input("Input username:")
+        #                 self.player = Player(username, team)
+        #                 self.run = True
+        #                 break
                     
-                    case 2:
-                        break
+        #             case 2:
+        #                 break
             
-            except ValueError:
-                print("Enter int") #Change later
-                continue
+        #     except ValueError:
+        #         print("Enter int") #Change later
+        #         continue
         self.mainGameLoop()
+
+    def startMenuActions(self, list_box):     
+        userInput = list_box.curselection()
+        userInput = int(userInput[0])
+        print(userInput)
+        self.gui.clear_action_frame() 
+        match userInput:
+            case 0:
+                self.gui.write_line("Pick your starter Pokemon!")
+                options = ["Bulbasaur", "Squirtle", "Charmander", "Back"]
+                self.gui.update_listbox(options)
+                self.gui.action_button.config(command = lambda:self.newGameMenu(self.gui.actions_box))
+
+            case 1:
+                team = importPlayerTeam()
+                username = input("Input username:")
+                self.player = Player(username, team)
+                self.run = True
+
+    def newGameMenu(self, list_box):
+        userInput = int(list_box.curselection()[0])
+        print("New Game")
+        playerTeam = []
+        username = ""
+        match userInput:
+            case 0:
+                playerTeam.append(importPokemonByName(self.file, "Bulbasaur"))
+                self.player = Player(username, playerTeam)
+            case 1:
+                playerTeam.append(importPokemonByName(self.file, "Squirtle"))
+                self.player = Player(username, playerTeam)
+            case 2:
+                playerTeam.append(importPokemonByName(self.file, "Charmander"))
+                self.player = Player(username, playerTeam)
+            case 3:
+                self.gui.clear_action_frame()
+                self.startMenu()
+        self.run = True
+        self.mainGameLoop()
+
+    def loadGameMenu(self, list_box):
+        userInput = int(list_box.curselection()[0])
+        self.gui.create_input_field()
 
 def importPlayerTeam():
     while True:

@@ -59,6 +59,7 @@ class Pokemon():
         other.damaged(self.attacks[attack].attack(self.stats.atk))
 
     def damaged(self, dmg):
-        self.stats.decreaseHealth(round(dmg - (self.stats.defense * 0.1)))
+        print(round(dmg*0.3-(self.stats.defense*0.1)))
+        self.stats.decreaseHealth(round(dmg * 0.3 - (self.stats.defense * 0.1)))
         if self.stats.hp <= 0:
             self.fainted = True
