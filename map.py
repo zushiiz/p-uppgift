@@ -1,7 +1,4 @@
-import random
 class Map: 
-    # [y][x] coordinate type
-
     def __init__(self, height = 10, width = 10):
         self.h = height
         self.w = width
@@ -23,8 +20,13 @@ class Map:
             visualizedMap += "\n"
         return visualizedMap
     
-    # Method used to move the player to a certain x and y
-    def movePlayer(self, y, x):
+    # x and y has now been switched for the ui-format, not changed here
+    def movePlayer(self, y, x): # Updates a players x and y position
+        """
+        :param y: integer
+        :param x: integer
+        :return: None
+        """
         y = self.playerY + y
         x = self.playerX + x
         try:
@@ -32,7 +34,7 @@ class Map:
                 print("Cannot move there")
             else:
                 self.grid[y][x] = self.playerIcon
-                self.grid[self.playerY][self.playerX] = self.mapIcon            
+                self.grid[self.playerY][self.playerX] = self.mapIcon        
                 self.playerY = y
                 self.playerX = x
         except IndexError:
