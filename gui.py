@@ -93,3 +93,31 @@ class GUI():
         self.clear_action_frame()
         self.input_field = tk.Entry(self._actions_frame)
         self.input_field.pack()
+
+    def create_map(self, map):
+        print("creating")
+        for tile in self.gui_map_frame.winfo_children():
+            tile.destroy()
+        self.gui_map_frame = tk.Frame(self.root)
+        self.gui_map_frame.grid(row=3, column=3)
+        i = 0
+        for col in map.grid:
+            print("col")
+            j = 0
+            for row in col:
+                print("row")
+                tile = tk.Label(
+                    self.gui_map_frame,
+                    text="o",
+                    height=1,
+                    width=2,
+                    bd=2,
+                    relief="solid",
+                    bg = "red"
+                    )
+                if row == "p":
+                    tile.config(text="p", bg = "blue")
+                tile.grid(column=i, row=j)
+                j += 1
+            i += 1
+    
