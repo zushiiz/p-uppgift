@@ -32,7 +32,6 @@ class GUI():
         self._actions_frame.grid_propagate(False)
 
         self.actions_box = tk.Listbox(self._actions_frame, width=25)
-        self.actions_box.pack()
 
         # Buttons
         self._button_frame = tk.Frame(
@@ -83,10 +82,13 @@ class GUI():
     
     def clear_action_frame(self):
         for widget in self._actions_frame.winfo_children():
-            widget.destroy()
-        self.actions_box = tk.Listbox(self._actions_frame, width=25)
-        self.actions_box.pack()                  
+            widget.destroy()          
     
+    def create_actions_box(self):
+        self.clear_action_frame()
+        self.actions_box = tk.Listbox(self._actions_frame, width=25)
+        self.actions_box.pack()   
+
     def create_input_field(self):
         self.clear_action_frame()
         self.input_field = tk.Entry(self._actions_frame)

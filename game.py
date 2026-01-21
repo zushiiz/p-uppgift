@@ -69,6 +69,7 @@ class MainGame:
 
         self.gui.write_line(f"Welcome {self.username}!")
 
+        self.gui.create_actions_box()
         options = ["New Game", "Load Game", "Quit Game"]
         self.gui.update_listbox(options)
         self.gui.action_button.config(command = lambda:self.startMenuActions(self.gui.actions_box))        
@@ -79,11 +80,11 @@ class MainGame:
         userInput = list_box.curselection()
         userInput = int(userInput[0])
         print(userInput)
-        self.gui.clear_action_frame() 
         match userInput:
             case 0:
                 self.gui.write_line("Pick your starter Pokemon!")
                 options = ["Bulbasaur", "Squirtle", "Charmander", "Back"]
+                self.gui.create_actions_box()
                 self.gui.update_listbox(options)
                 self.gui.action_button.config(command = lambda:self.newGameMenu(self.gui.actions_box))
 
@@ -103,20 +104,21 @@ class MainGame:
             case 0:
                 playerTeam.append(importPokemonByName(self.file, "Bulbasaur"))
                 self.player = Player(username, playerTeam)
+                self.run = True
             case 1:
                 playerTeam.append(importPokemonByName(self.file, "Squirtle"))
                 self.player = Player(username, playerTeam)
+                self.run = True
             case 2:
                 playerTeam.append(importPokemonByName(self.file, "Charmander"))
                 self.player = Player(username, playerTeam)
+                self.run = True
             case 3:
                 self.gui.clear_action_frame()
                 self.startMenu()
-        self.run = True
         self.mainGameLoop()
 
     def loadGameMenu(self):
-        # userInput = int(list_box.curselection()[0])
         self.gui.write_line("OBS! It has to be a file with correct csv Format and in the correct directory!\n" \
                             "Input the FULL filename/path in the field")
         self.gui.create_input_field()
