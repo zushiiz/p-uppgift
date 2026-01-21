@@ -25,7 +25,7 @@ class Map:
         """
         :param y: integer
         :param x: integer
-        :return: None
+        :return : None
         """
         y = self.playerY + y
         x = self.playerX + x

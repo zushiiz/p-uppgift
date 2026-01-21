@@ -34,8 +34,8 @@ class MainGame:
 
     def generateRandomEnemy(self): # Generates one random pokemon object for an encounter
         """
-        Parameters: None
-        Return values: enemy=Pokemon()
+        :param : None
+        :return enemy: Pokemon()
         """
         playerLevels = []
         for pokemonObj in self.player.team:
@@ -48,8 +48,8 @@ class MainGame:
 
     def start(self): # Program starting point
         """
-        Parameters: None
-        Return values: None
+        :param : None
+        :return : None
         """        
         self.gui.write_line("Enter a username")
         self.gui.create_input_field()
@@ -57,8 +57,8 @@ class MainGame:
 
     def startMenu(self): # Initiates/Creates starting menu
         """
-        Parameters: None
-        Return values: None
+        :param : None
+        :return : None
         """
         print("Starting Menu...")
         self.gui.write_line(f"Welcome {self.username}!")
@@ -69,8 +69,8 @@ class MainGame:
 
     def startMenuActions(self, list_box): # Handles the logic for if user wants to load or create new game
         """
-        Parameters: list_box=tk.Listbox
-        Return values: None
+        :param list_box : tk.Listbox
+        :return : None
         """
         userInput = list_box.curselection()
         userInput = int(userInput[0])
@@ -88,8 +88,8 @@ class MainGame:
 
     def newGameMenu(self, list_box): # Menu that lets user choose starter pokemon
         """
-        Parameters: list_box=tk.Listbox
-        Return values: None
+        :param list_box: tk.Listbox
+        :return : None
         """        
         userInput = int(list_box.curselection()[0])
         print("New Game")
@@ -116,8 +116,8 @@ class MainGame:
 
     def loadGameMenu(self): # Menu that lets user import own file with correct format
         """
-        Parameters: None
-        Return values: None
+        :param : None
+        :return : None
         """                
         self.gui.write_line("OBS! It has to be a file with correct csv Format and in the correct directory!\n" \
                             "Input the FULL filename/path in the field")
@@ -126,8 +126,8 @@ class MainGame:
     
     def _storeUsername(self, input): # Updates the username attribute
         """
-        Parameters: input=string
-        Return values: None
+        :param input: string
+        :return : None
         """
         if input == "":
             self.username = "Guest"
@@ -139,8 +139,8 @@ class MainGame:
 
     def importPlayerTeam(self, userFile): # Imports the file that user enters
         """
-        Parameters: userFile=string(file path)
-        Return values: None 
+        :param userFile : string(file path)
+        :return : None 
         """        
         playerTeam = []
         print(f"Importing file:{userFile}")
@@ -160,8 +160,8 @@ class MainGame:
 
     def mapGui(self): # Creates/Formats the gui for the map and dpad
         """
-        Parameters: None
-        Return values: None
+        :param : None
+        :return : None
         """
         if self.run == True:
             print("Run successful")
@@ -185,18 +185,23 @@ class MainGame:
             #         self.player.changeActivePokemon()
             #     case 1:
             #         self.run = exportPlayerTeam(self.player.team)
-            #     case _:
-            #         enemy = self.generateRandomEnemy()
-            #         encounterInstance = Encounter(self.player, enemy)
-            #         encounterInstance.startEncounter()
-            #         print(encounterInstance.playerWin)
-            #         if encounterInstance.playerWin == True:
-            #             expGained = encounterInstance.opponent.leveling.droppedExp
-            #             nextEvolutions = getEvolutionName(self.masterList, self.player.activePokemon, self.file)
-            #             self.player.activePokemon.gainExp(expGained, nextEvolutions)
-            #             print(self.player.activePokemon.leveling)
-            #         else:
-            #             continue
+
+    def startEncounter(self):
+        num = random.randint(1,5) # 1/5 chance for an encounter
+        if num == 1:
+            enemy = self.generateRandomEnemy()
+
+            encounterInstance = Encounter(self.player, enemy)
+            encounterInstance.startEncounter()
+            print(f"Enemy defeat: {encounterInstance.playerWin}")
+
+            if encounterInstance.playerWin == True:
+                expGained = encounterInstance.opponent.leveling.droppedExp
+                print(f"Exp dropped :{expGained}")
+                nextEvolutions = getEvolutionName(self.masterList, self.player.activePokemon, self.file)
+                print(f"Pokemon evolutions: {nextEvolutions}")
+                self.player.activePokemon.gainExp(expGained, nextEvolutions)
+                print(self.player.activePokemon.leveling)
 
 def exportPlayerTeam(playerTeam):
     """
