@@ -156,26 +156,28 @@ class GUI():
 
     def create_dpad(self):
         self.action_button.grid_forget()
+        self._dpad_frame = tk.Frame(self._button_frame)
+        self._dpad_frame.pack()
         self.up = tk.Button(
-            self._button_frame,
+            self._dpad_frame,
             text = "↑",
             width=2,
             height=1
             )
         self.down = tk.Button(
-            self._button_frame,
+            self._dpad_frame,
             text = "↓",
             width=2,
             height=1
             )
         self.left = tk.Button(
-            self._button_frame,
+            self._dpad_frame,
             text = "←",
             width=2,
             height=1
             )
         self.right = tk.Button(
-            self._button_frame,
+            self._dpad_frame,
             text = "→",
             width=2,
             height=1
@@ -186,6 +188,5 @@ class GUI():
         self.right.grid(row=1, column=2)
     
     def destroy_dpad(self):
-        for widget in self._button_frame.winfo_children():
-            widget.destroy()
+        self._dpad_frame.destroy()
         self.action_button.grid()
