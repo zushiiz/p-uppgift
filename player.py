@@ -1,36 +1,36 @@
 class Player:
-    def __init__(self, username = "Guest", team = ["Empty"]):
+    def __init__(self, username = "Guest", team = ["Empty"], gui = None):
         self.name = username
         self.team = team
         self.activePokemon = team[0]
 
         self.potions = 10
-
         self.pokeballs = 10
+
+        self.gui = gui
     
     def __str__(self):
         return (f"User: {self.name}")
-    
-    def attackOption(self):
-        while True:
-            amountOfAttacks = []
-            for i in range(len(self.activePokemon.attacks)):
-                print(f"[{i}] {self.activePokemon.attacks[i]}")
-                amountOfAttacks.append(i)
-                i += 1
-            print(f"[4] Back")
-            try:
-                userInput = int(input("What would you like to do?:"))
-                if userInput == 4:
-                    return userInput
-                elif userInput in amountOfAttacks:
-                    return userInput
-                else:
-                    print("Please enter a valid digit")
-                    continue
-            except ValueError:
-                print("Please enter a digit")
-                continue
+
+        # while True:
+        #     amountOfAttacks = []
+        #     for i in range(len(self.activePokemon.attacks)):
+        #         print(f"[{i}] {self.activePokemon.attacks[i]}")
+        #         amountOfAttacks.append(i)
+        #         i += 1
+        #     print(f"[4] Back")
+        #     try:
+        #         userInput = int(input("What would you like to do?:"))
+        #         if userInput == 4:
+        #             return userInput
+        #         elif userInput in amountOfAttacks:
+        #             return userInput
+        #         else:
+        #             print("Please enter a valid digit")
+        #             continue
+        #     except ValueError:
+        #         print("Please enter a digit")
+        #         continue
     
     def swapOption(self, back = True): #Back is backbutton [4], back button is also hardcoded right now, need to test with more pokemon, alt. change it to b instad of 4
         while True:
