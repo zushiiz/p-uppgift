@@ -67,12 +67,12 @@ class MainGame:
         self.gui.update_listbox(options)
         self.gui.action_button.config(command = lambda:self.startMenuActions(self.gui.actions_box))        
 
-    def startMenuActions(self, list_box): # Handles the logic for if user wants to load or create new game
+    def startMenuActions(self, listbox): # Handles the logic for if user wants to load or create new game
         """
-        :param list_box : tk.Listbox
+        :param listbox : tk.Listbox
         :return : None
         """
-        userInput = list_box.curselection()
+        userInput = listbox.curselection() # Gives tuple of indices
         userInput = int(userInput[0])
         print(f"User input: {userInput}")
         match userInput:
@@ -86,27 +86,27 @@ class MainGame:
             case 1:
                 self.loadGameMenu()
 
-    def newGameMenu(self, list_box): # Menu that lets user choose starter pokemon
+    def newGameMenu(self, listbox): # Menu that lets user choose starter pokemon
         """
-        :param list_box: tk.Listbox
+        :param listbox: tk.Listbox
         :return : None
         """        
-        userInput = int(list_box.curselection()[0])
+        userInput = int(listbox.curselection()[0])
         print("New Game")
         playerTeam = []
         username = ""
-        match userInput:
+        match userInput: # Can be made into a function/method
             case 0:
                 playerTeam.append(importPokemonByName(self.file, "Bulbasaur"))
-                self.player = Player(username, playerTeam)
+                self.player = Player(username, playerTeam, self.gui)
                 self.run = True
             case 1:
                 playerTeam.append(importPokemonByName(self.file, "Squirtle"))
-                self.player = Player(username, playerTeam)
+                self.player = Player(username, playerTeam, self.gui)
                 self.run = True
             case 2:
                 playerTeam.append(importPokemonByName(self.file, "Charmander"))
-                self.player = Player(username, playerTeam)
+                self.player = Player(username, playerTeam, self.gui)
                 self.run = True
             case _:
                 self.gui.clear_action_frame()
@@ -174,35 +174,44 @@ class MainGame:
             self.gui.update_listbox(options)
 
             self.gui.create_dpad()
-            self.gui.up.config(command = lambda: (self.map.movePlayer(0, -1), self.gui.refresh_map(self.map)))
-            self.gui.down.config(command = lambda: (self.map.movePlayer(0, 1), self.gui.refresh_map(self.map)))
-            self.gui.left.config(command = lambda: (self.map.movePlayer(-1, 0), self.gui.refresh_map(self.map)))
-            self.gui.right.config(command = lambda: (self.map.movePlayer(1, 0), self.gui.refresh_map(self.map)))
+            self.gui.up.config(command = lambda: (self.map.movePlayer(0, -1), self.gui.refresh_map(self.map), self.startEncounter()))
+            self.gui.down.config(command = lambda: (self.map.movePlayer(0, 1), self.gui.refresh_map(self.map), self.startEncounter()))
+            self.gui.left.config(command = lambda: (self.map.movePlayer(-1, 0), self.gui.refresh_map(self.map), self.startEncounter()))
+            self.gui.right.config(command = lambda: (self.map.movePlayer(1, 0), self.gui.refresh_map(self.map), self.startEncounter()))
 
             # menuActionIndex = self.map.userInterface()
             # match menuActionIndex:
             #     case 0:
             #         self.player.changeActivePokemon()
             #     case 1:
-            #         self.run = exportPlayerTeam(self.player.team)
+            #         self.run = exportPlayerTeam(self.player.team)     
 
     def startEncounter(self):
         num = random.randint(1,5) # 1/5 chance for an encounter
         if num == 1:
             enemy = self.generateRandomEnemy()
+            self.gui.disable_map()
+            self.gui.show_terminal()
+            self.gui.destroy_dpad()
+            self.encounterInstance = Encounter(
+                                self.player, 
+                                enemy, 
+                                self.gui,
+                                onStop=self.encounterStopped)
+            self.encounterInstance.startEncounter()
 
-            encounterInstance = Encounter(self.player, enemy)
-            encounterInstance.startEncounter()
-            print(f"Enemy defeat: {encounterInstance.playerWin}")
+    def encounterStopped(self):
+        print(f"Enemy defeat: {self.encounterInstance.playerWin}")
 
-            if encounterInstance.playerWin == True:
-                expGained = encounterInstance.opponent.leveling.droppedExp
-                print(f"Exp dropped :{expGained}")
-                nextEvolutions = getEvolutionName(self.masterList, self.player.activePokemon, self.file)
-                print(f"Pokemon evolutions: {nextEvolutions}")
-                self.player.activePokemon.gainExp(expGained, nextEvolutions)
-                print(self.player.activePokemon.leveling)
-
+        if self.encounterInstance.playerWin == True:
+            expGained = self.encounterInstance.opponent.leveling.droppedExp
+            print(f"Exp dropped :{expGained}")
+            nextEvolutions = getEvolutionName(self.masterList, self.player.activePokemon, self.file)
+            print(f"Pokemon evolutions: {nextEvolutions}")
+            self.player.activePokemon.gainExp(expGained, nextEvolutions)
+            print(self.player.activePokemon.leveling)   
+        
+    
 def exportPlayerTeam(playerTeam):
     """
     Parameters: playerTeam=[Pokemon(), ...]
