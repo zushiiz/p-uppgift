@@ -32,36 +32,39 @@ class Player:
         #         print("Please enter a digit")
         #         continue
     
-    def swapOption(self, back = True): #Back is backbutton [4], back button is also hardcoded right now, need to test with more pokemon, alt. change it to b instad of 4
-        while True:
-            pokemonPositions = {}
-            for i in range(len(self.team)):
-                if self.team[i] == self.activePokemon:
-                    continue
-                else:
-                    print(f"[{i}] {self.team[i]}")
-                    pokemonPositions[i] = self.team[i]
-                    i += 1
-            if back == True:
-                print(f"[6] Back")
-            try:
-                userInput = int(input("What would you like to do?:"))
-                if userInput == 6 and back == True:
-                    return userInput
-                elif userInput in pokemonPositions.keys():
-                    if pokemonPositions[userInput].fainted == True:
-                        print(f"{pokemonPositions[userInput]} has fainted and cannot be sent out")
-                        continue
-                    else:
-                        print(f"{self.name} swapped out {self.activePokemon} for {pokemonPositions[userInput]}")
-                        self.activePokemon = pokemonPositions[userInput]
-                        return self.activePokemon
-                else:
-                    print("Please enter a valid digit")
-                    continue                   
-            except ValueError:
-                print("Please enter a digit")
-                continue
+    def swapOption(self, userInput): #Back is backbutton [4], back button is also hardcoded right now, need to test with more pokemon, alt. change it to b instad of 4
+        print(f"Swapped {self.activePokemon} to {self.team[userInput]}")
+        self.activePokemon = self.team[userInput+1] # Silvertape fix bruuuh
+        
+        # while True:
+        #     pokemonPositions = {}
+        #     for i in range(len(self.team)):
+        #         if self.team[i] == self.activePokemon:
+        #             continue
+        #         else:
+        #             print(f"[{i}] {self.team[i]}")
+        #             pokemonPositions[i] = self.team[i]
+        #             i += 1
+        #     if back == True:
+        #         print(f"[6] Back")
+        #     try:
+        #         userInput = int(input("What would you like to do?:"))
+        #         if userInput == 6 and back == True:
+        #             return userInput
+        #         elif userInput in pokemonPositions.keys():
+        #             if pokemonPositions[userInput].fainted == True:
+        #                 print(f"{pokemonPositions[userInput]} has fainted and cannot be sent out")
+        #                 continue
+        #             else:
+        #                 print(f"{self.name} swapped out {self.activePokemon} for {pokemonPositions[userInput]}")
+        #                 self.activePokemon = pokemonPositions[userInput]
+        #                 return self.activePokemon
+        #         else:
+        #             print("Please enter a valid digit")
+        #             continue                   
+        #     except ValueError:
+        #         print("Please enter a digit")
+        #         continue
 
     def itemsOption(self): # Max ammount is hardcoded for now
         while True:
