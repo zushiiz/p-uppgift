@@ -112,7 +112,7 @@ class MainGame:
                 self.gui.clear_action_frame()
                 self.startMenu()
 
-        self.mapGui()
+        self.firstStart()
 
     def loadGameMenu(self): # Menu that lets user import own file with correct format
         """
@@ -154,9 +154,13 @@ class MainGame:
             self.player = Player(self.username, playerTeam)
             print("Import successful, running game")
             self.run = True
-            self.mapGui()
+            self.firstStart()
         except FileNotFoundError:
             print("Import failed\nError: File not found")
+
+    def firstStart(self):
+        self.gui.write_line("Started game! Use w/a/s/d to walk around!")
+        self.mapGui()
 
     def mapGui(self): # Creates/Formats the gui for the map and dpad
         """
@@ -168,7 +172,6 @@ class MainGame:
             self.gui.disable_terminal()
             self.gui.show_map(self.map)
             self.gui.clear_action_frame()
-            self.gui.write_line("Started game! Use w/a/s/d to walk around!")
     
             options = ["Team", "Quit"]
             self.gui.update_listbox(options)
@@ -200,16 +203,19 @@ class MainGame:
                                 onStop=self.encounterStopped)
             self.encounterInstance.startEncounter()
 
-    def encounterStopped(self):
+    def encounterStopped(self, instance):
         print(f"Enemy defeat: {self.encounterInstance.playerWin}")
-
+        self.gui.write_line("Encounter finished") # Remove later
+        print(self.encounterInstance.playerWin)
         if self.encounterInstance.playerWin == True:
             expGained = self.encounterInstance.opponent.leveling.droppedExp
             print(f"Exp dropped :{expGained}")
             nextEvolutions = getEvolutionName(self.masterList, self.player.activePokemon, self.file)
             print(f"Pokemon evolutions: {nextEvolutions}")
             self.player.activePokemon.gainExp(expGained, nextEvolutions)
-            print(self.player.activePokemon.leveling)   
+            print(self.player.activePokemon.leveling)
+        
+        # self.mapGui()
         
     
 def exportPlayerTeam(playerTeam):
