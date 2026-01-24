@@ -4,7 +4,7 @@ class Player:
         self.team = team
         self.activePokemon = team[0]
 
-        self.potions = 10
+        self.potions = 1
         self.pokeballs = 10
 
         self.gui = gui
@@ -97,30 +97,10 @@ class Player:
                 print("Please enter a valid digit")
                 continue                
     
-    def healPokemon(self):
-        while True:
-            pokemonPositions = {}
-            for i in range(len(self.team)):
-                print(f"[{i}] {self.team[i]}")
-                pokemonPositions[i] = self.team[i]
-                i += 1
-            print("[6] Back")
-
-            try:
-                userInput = int(input("Which pokemon do you want to heal?"))
-                if userInput == 6:
-                    return userInput
-                elif userInput in pokemonPositions.keys() and pokemonPositions[userInput].fainted == False:
-                    pokemonPositions[userInput].stats.increaseHealth(100) #Healing amount hardcoded
-                    self.potions -= 1
-                    print(f"After healing {pokemonPositions[userInput].stats}")
-                    break
-                else:
-                    print("Please enter a valid digit")
-                    continue                    
-            except ValueError:
-                print("Please enter a digit")
-                continue
+    def healPokemon(self, pokemon):
+        pokemon.stats.increaseHealth(100) #Healing amount hardcoded
+        self.potions -= 1
+        print(f"After healing {pokemon.stats}")
 
     def changeActivePokemon(self):
         print("Choose active Pokemon!")
