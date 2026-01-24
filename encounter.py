@@ -61,20 +61,17 @@ class Encounter:
         print(f"playerAction(): {userInput}")
 
         print(f"User input - playerAction(): {userInput}")
-        
+        self.gui.create_actions_box()
+        options = []        
         match userInput:
-            case 0: #Finished mostly
-                self.gui.create_actions_box()
-                options = []
+            case 0: # Fight
                 for e in self.player.activePokemon.attacks:
                     options.append(e)
                 options.append("Back")
                 self.gui.update_listbox(options)
                 self.gui.action_button.config(command = lambda:self.playerFightMenu(self.gui.actions_box, options))
                 
-            case 1:
-                self.gui.create_actions_box()
-                options = []
+            case 1: # Team
                 for e in self.player.team:
                     if e == self.playerPokemon:
                         continue
@@ -84,10 +81,12 @@ class Encounter:
                 self.gui.update_listbox(options)
                 self.gui.action_button.config(command = lambda:self.playerSwapMenu(self.gui.actions_box, options))
 
-            case 2:
-                # Items
-                pass
-            case 3:
+            case 2: # Items
+                options = [f"Healing potion - {self.player.potions}/10", f"Pokeballs - {self.player.pokeballs}/10", "Back"]
+                self.gui.update_listbox(options)
+                self.gui.action_button.config(command = lambda:self.playerItemsMenu(self.gui.actions_box, options))
+
+            case 3: # Run
                 self.gui.write_line("You've fled from the encounter")
                 self.stopEncounter()
             case _: # Should never run, but just in case
@@ -169,37 +168,57 @@ class Encounter:
             if not faint:
                 self.enemyAttack()
             self.nextTurn()
-
-
-#         case "1":
-#             playerActionIndex = self.player.swapOption()
-#             if playerActionIndex == 6:
-#                 continue
-#             else: # check logic for pokemon if it dies instantly, this loops needs to rerun
-#                 self.playerPokemon = playerActionIndex
-#                 self.enemyAttack()
-        
-#         case "2":
-#             playerActionIndex = self.player.itemsOption()
-#             if playerActionIndex == 1:
-#                 if self.catchPokemon():
-#                     self.stopEncounter()
-#                     break
-#                 else:
-#                     self.enemyAttack()
-#             elif playerActionIndex == 2:
-#                 continue
-#             else:
-#                 self.enemyAttack()
-
-#         case "3":
-#             self.stop = True
-#             break
-        
-#         case _:
-#             continue          
     
-#     self.nextTurn()
+    def playerItemsMenu(self, listbox, options):
+        userInput = listbox.curselection()
+        
+        if len(userInput) == 0:
+            raise ValueError("No actions selected")
+        
+        if options[int(userInput[0])] == "Back":
+            self.backToEncounterMenu()
+            return                
+        
+        userInput = userInput[0]
+        options = []
+        match userInput:
+            case 0:
+                if self.player.potions <= 0:
+                    self.gui.write_line("You don't have any potions left")
+                    return
+                self.gui.write_line("Choose a pokemon to heal")
+                for e in self.player.team:
+                    options.append(f"{e.name} - {e.stats.hp}/{e.stats.maxHp}")
+                options.append("Back")
+                self.gui.update_listbox(options)
+                self.gui.action_button.config(command = lambda:self.potionMenu(self.gui.actions_box, options))
+            
+            case 1:
+                if self.player.pokeballs <= 0:
+                    self.gui.write_line("You don't have any pokeballs left")
+                    return                
+                self.catchPokemon()
+                self.nextTurn()
+
+    def potionMenu(self, listbox, options):
+        userInput = listbox.curselection()
+        
+        if len(userInput) == 0:
+            raise ValueError("No actions selected")
+        
+        if options[int(userInput[0])] == "Back":
+            self.backToEncounterMenu()
+            return
+        userInput = userInput[0]
+        if self.player.team[userInput].fainted == True: #Silvertape fix
+            self.gui.write_line("Pokemon has already fainted, cannot heal")
+            return
+        else:
+            pokemon = self.player.team[userInput]
+            self.player.healPokemon(pokemon)
+            self.gui.write_line(f"Healed {pokemon.name}! Hp: {pokemon.stats.hp}/{pokemon.stats.maxHp}")
+            self.enemyAttack()
+            self.nextTurn()
 
     def checkPlayerStatus(self): # True if all fainted 
         amount = 0
@@ -241,14 +260,14 @@ class Encounter:
                 return None, False
             
     def catchPokemon(self):
-        print(f"{self.player} used Pokeball!")
+        self.gui.write_line(f"{self.player} used Pokeball!")
         if random.randint(1, 4) == 1:
-            print(f"{self.opponent} was caught!")
+            self.gui.write_line(f"{self.opponent} was caught!")
             self.player.team.append(self.opponent) # No limit
-            return True
+            self.stopEncounter()
         else:
-            print(f"{self.opponent} escaped!")
-            return False
+            self.gui.write_line(f"{self.opponent} escaped!")
+            self.enemyAttack()
 
     def enemyAttack(self): # When only enemy attacks
         enemyAttack = random.randint(0, (len(self.opponent.attacks)-1))
