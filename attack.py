@@ -1,4 +1,9 @@
-class MoveList(list):   # Inherits from list-class
+class Movelist(list):
+    """
+    Class desc:
+    Stores all moves for one Pokemon-object
+    Inherits list
+    """
     def __init__(self, *args): # *args make it possible to initialize the class with any amount of args as elements
         super().__init__(args)
         if len(self) > 4: # Temporary gate, this only sends error, no solution. Probably not gonna fix it for now since I'm not adding more date for attacks
@@ -13,6 +18,10 @@ class MoveList(list):   # Inherits from list-class
         return attacks
 
 class Attack():
+    """
+    Class desc:
+    Stores data for an attack, ex: name, strength(atkMul)
+    """
     def __init__(self, attackName = "untitled", attackMultiplier = 1):
         self.name = attackName
         self.atkMul = int(attackMultiplier)

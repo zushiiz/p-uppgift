@@ -1,4 +1,11 @@
 class Stats():
+    """
+    Class desc:
+    Stores and handle all numbered stats for a Pokemon-object
+
+    Notes:
+    Math is not fine tuned, balancing issue
+    """
     def __init__(self, health = 70, attack = 81, defense = 75, speed = 70):
         self.baseAtk = int(attack)
         self.baseHp = int(health)
@@ -13,8 +20,7 @@ class Stats():
 
     def __str__(self):
         return (f"HP: {self.hp}, ATK: {self.atk}, DEF: {self.defense}")
-
-        # Dubbelkolla all matte
+    
     def increaseHealth(self, amount):
         self.hp += amount
         if self.hp > self.maxHp:

@@ -1,4 +1,8 @@
 class Leveling():
+    """
+    Class desc:
+    Stores and handles most level related data
+    """
     def __init__(self, level = 1, evolve = True, evolutionStage = 0):
         self.lvl = int(level)
         self.exp = 0 # Current amount of exp
@@ -18,16 +22,13 @@ class Leveling():
     def __str__(self):
         return f"Lvl. {self.lvl}: {self.exp}/{self._nextLvl}"
 
-    # This method handles the amount of the incoming exp a pokemon will gain and how that affects the level
-    # methods called: self.levelUp()
-    def increaseExperience(self, ammount):
+    def increaseExperience(self, ammount): # Increases exp and calls levelUp()-method when threshold reached
         self.exp += ammount
         while self.exp >= self._nextLvl:
             self.exp -= self._nextLvl
             self.levelUp()
 
-    # This method will be looped to handle the level stat and all the requirements for the next level
-    def levelUp(self):
+    def levelUp(self): # Increases level and recalculates exp needed for next level
         self.lvl += 1
         self._nextLvl = (self.lvl * 10000) // 5
         self.droppedExp = (self.lvl * 10000) // 6

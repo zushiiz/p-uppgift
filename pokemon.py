@@ -3,17 +3,21 @@ from stats import Stats
 from leveling import Leveling
 
 class Pokemon(): 
-    def __init__(self, name, stats = Stats(), moves = MoveList(Attack("Scratch")), leveling = Leveling(), nextEvolution = "a"): #Change some default data
+    """
+    Class desc:
+    Handles experience gain, stat scaling, attacking, taking damage, fainting, and evolution logic
+    """
+    def __init__(self, name, stats = Stats(), moves = Movelist(Attack("Scratch")), leveling = Leveling(), nextEvolution = "a"): #Change some default data
         self.name = name
 
         self.stats = stats
         self.leveling = leveling
         if self.leveling.lvl > 1:
             self.stats.increaseAllStats(self.leveling.lvl)
-        self.attacks = moves
+        self.movelist = moves
 
         self.evolution = nextEvolution
-        #add a block to higher level to evole if its stage 1
+        # add a block to higher level to evole if its stage 1
         if self.leveling.stage == 0: # Logic here is not uuh optimal
             self.levelToEvolve = 16
         else:
@@ -26,22 +30,35 @@ class Pokemon():
             return (f"{self.name}, fainted")
         return (f"{self.name}, lvl:{self.leveling.lvl}")
     
-    def gainExp(self, exp):
+    def gainExp(self, exp): # Increases exp data
+        """
+        :param exp: integer
+        """
         self.leveling.increaseExperience(exp)
         self.stats.increaseAllStats(self.leveling.lvl)
 
-    def evolve(self, evolution):
+    def evolve(self, evolution): # Updates all necessary data when evolving
+        """
+        :param evolution: Pokemon()
+        """
         self.name = evolution.name
         self.leveling.stage += 1
         self.levelToEvolve = 36
         self.stats.increaseAllBaseStats()
         self.leveling.canEvolve = evolution.leveling.canEvolve
     
-    def attack(self, other, attack): # Rename shit bruh
-        other.damaged(self.attacks[attack].attack(self.stats.atk))
+    def attack(self, other, atkIndex): # Calls upon damaged()-method on another pokemon-object
+        """
+        :param other: Pokemon()
+        :param attack: integer
+        """
+        other.damaged(self.movelist[atkIndex].attack(self.stats.atk))
 
-    def damaged(self, dmg):
-        print(round(dmg*0.3-(self.stats.defense*0.1)))
+    def damaged(self, dmg): # Decreases health stat
+        """
+        :param dmg: integer
+        """
+        print(f"{self.name} - Damage recieved: {round(dmg*0.3-(self.stats.defense*0.1))}")
         self.stats.decreaseHealth(round(dmg * 0.3 - (self.stats.defense * 0.1)))
         if self.stats.hp <= 0:
             self.fainted = True

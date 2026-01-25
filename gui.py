@@ -1,15 +1,23 @@
 import tkinter as tk
 
 class GUI():
+    """
+    Class desc:
+    Manages the Tkinter-based graphical user interface, including the terminal display,
+    player action menus, buttons, map rendering, and keyboard input handling
+
+    Notes:
+    Most places uses grid(), but some uses pack(), should probably change it for consistency
+    """
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("main-window")
         window_width = 800
         window_height = 500
-        self.root.geometry(f"{window_width}x{window_height}")
+        self.root.geometry(f"{window_width}x{window_height}") # Pixels
         left_frame_width = window_width//3 
 
-        # Terminal 
+        """Terminal""" 
         self.terminal_frame =  tk.Frame(
             self.root,
             height=window_height,
@@ -19,12 +27,23 @@ class GUI():
             relief="solid"
 
             )
-        self.terminal_frame.grid_propagate(False)        
+        self.terminal_frame.grid_propagate(False) # Does not scale relative to grid       
         scrollbar = tk.Scrollbar(self.terminal_frame)
         scrollbar.pack(side="right", fill="y")
         self.terminal_frame.grid(column=1, row=0, rowspan=2)
 
-        # Player actions
+        self.display_terminal = tk.Text(
+            self.terminal_frame,
+            bg="black",
+            fg="white",
+            yscrollcommand = scrollbar.set
+        )
+        self.display_terminal.pack(side="left", fill="both", expand=True)
+        scrollbar.config(command=self.display_terminal.yview)
+
+        self.display_terminal.config(state="disabled")
+
+        """Player actions(listbox)"""
         self._actions_frame = tk.Frame(
             self.root,
             height=window_height//3,
@@ -38,7 +57,7 @@ class GUI():
 
         self.actions_box = tk.Listbox(self._actions_frame, width=25)
 
-        # Buttons
+        """Buttons"""
         self._button_frame = tk.Frame(
             self.root,
             height=window_height//3,
@@ -56,7 +75,7 @@ class GUI():
         )
         self.action_button.grid()         
 
-        # Labels
+        """Labels"""
         label_frame = tk.Frame(
             self.root,
             height=window_height//3,
@@ -69,21 +88,10 @@ class GUI():
         test_label = tk.Label(label_frame, text="Hello World!") #temporary
         test_label.pack()
 
-        self.display_terminal = tk.Text(
-            self.terminal_frame,
-            bg="black",
-            fg="white",
-            yscrollcommand = scrollbar.set
-        )
-        self.display_terminal.pack(side="left", fill="both", expand=True)
-        scrollbar.config(command=self.display_terminal.yview)
-
-        self.display_terminal.config(state="disabled")
-
-        # Displayed map
+        """Map"""
         self.gui_map_frame = tk.Frame(self.root)
 
-        # Key-binds
+        """Key-binds"""
         self.root.bind("<Return>", lambda event: self.action_button.invoke())
         self.root.bind("w", lambda event: self.up.invoke())
         self.root.bind("s", lambda event: self.down.invoke())
@@ -91,47 +99,59 @@ class GUI():
         self.root.bind("a", lambda event: self.left.invoke())
 
     """Terminal Methods - terminal_frame"""
-    def write_line(self, msg):
+    def write_line(self, msg): # Writes in the displayed terminal
+        """
+        :param msg: string
+        """
         self.display_terminal.config(state="normal")
         self.display_terminal.insert("end", f"{msg}\n")
         self.display_terminal.see("end")
         self.display_terminal.config(state="disabled")
 
-    def show_terminal(self):
+    def show_terminal(self): # Displays the terminal
         self.terminal_frame.grid(column=1, row=0, rowspan=2)
     
-    def disable_terminal(self):
+    def disable_terminal(self): # Disables the terminal
         self.terminal_frame.grid_forget()
 
     """Player action methods - actions_frame"""
-    def update_listbox(self, contents):
+    def update_listbox(self, contents): # Creates a listbox and inserts options
+        """
+        :param contents: [any, ...]
+        """
         self.create_actions_box()
         for i in contents:
             self.actions_box.insert(tk.END, str(i))
     
-    def clear_action_frame(self):
+    def clear_action_frame(self): # Destroys all widget in _actions_frame
         for widget in self._actions_frame.winfo_children():
             widget.destroy()          
     
-    def create_actions_box(self):
+    def create_actions_box(self): # Clears _actions_frame and creates new listbox
         self.clear_action_frame()
         self.actions_box = tk.Listbox(self._actions_frame, width=25)
         self.actions_box.pack()
 
-    def create_input_field(self):
+    def create_input_field(self): # Clears _actions_frame and creates an input field
         self.clear_action_frame()
         self.input_field = tk.Entry(self._actions_frame)
         self.input_field.pack()
 
     """Map methods - terminal_frame"""
-    def show_map(self, map):
+    def show_map(self, map): # Displays map and refreshes
+        """
+        :param map: Map()
+        """
         self.gui_map_frame.grid(column=1, row=0, rowspan=2)
         self.refresh_map(map)
     
-    def disable_map(self):
+    def disable_map(self): # Disables map
         self.gui_map_frame.grid_forget()
     
-    def refresh_map(self, map):
+    def refresh_map(self, map): # Creates and updates map tiles
+        """
+        :param map: Map()
+        """
         for tile in self.gui_map_frame.winfo_children():
             tile.destroy()
         i = 0
@@ -151,54 +171,56 @@ class GUI():
                     tile.config(text="p", bg = "blue")
                 tile.grid(column=i, row=j)
                 j += 1
-            i += 1        
+            i += 1
 
-    def create_dpad(self):
+    def create_dpad(self): # Disables action_button and creates a dpad(4 buttons)
         self.action_button.grid_forget()
         self._dpad_frame = tk.Frame(self._button_frame)
         self._dpad_frame.pack()
+        button_height = 1
+        button_width = 2
         self.up = tk.Button(
             self._dpad_frame,
             text = "↑",
-            width=2,
-            height=1
+            width=button_width,
+            height=button_height
             )
         self.down = tk.Button(
             self._dpad_frame,
             text = "↓",
-            width=2,
-            height=1
+            width=button_width,
+            height=button_height
             )
         self.left = tk.Button(
             self._dpad_frame,
             text = "←",
-            width=2,
-            height=1
+            width=button_width,
+            height=button_height
             )
         self.right = tk.Button(
             self._dpad_frame,
             text = "→",
-            width=2,
-            height=1
+            width=button_width,
+            height=button_height
             )
         self.up.grid(row=0, column=1)
         self.left.grid(row=1, column=0)
         self.down.grid(row=1, column=1)
         self.right.grid(row=1, column=2)
     
-    def destroy_dpad(self):
+    def destroy_dpad(self): # Destroys dpad and displays actions_button
         self._dpad_frame.destroy()
         self.action_button.grid()
 
     """Button methods - button_frame"""
-    def create_back_button(self):
+    def create_back_button(self): # Creates a back button
         self.back_button = tk.Button(
             self._button_frame,
             text="Back"
         )
         self.back_button.grid()
 
-    def create_yn_buttons(self):
+    def create_yn_buttons(self): # Creates a yes and no button
         self.action_button.grid_forget()
 
         self.yes_button = tk.Button(
@@ -212,6 +234,6 @@ class GUI():
         self.yes_button.grid()
         self.no_button.grid()
     
-    def destroy_yn_buttons(self):
+    def destroy_yn_buttons(self): # Destroys yes and no button
         self.yes_button.destroy()
         self.no_button.destroy()
