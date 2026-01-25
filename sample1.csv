@@ -1,0 +1,7 @@
+Pokemon_name,Health,Attack,Defense,Speed,Type,Level,Can_evolve,Stage,Next_evolution
+Bulbasaur,70,100000,75,70,Grass/Poison,1,True,0,Ivysaur
+Ivysaur,73,83,76,70,Grass/Poison,1,True,1,Venusaur
+Venusaur,76,85,77,70,Grass/Poison,1,False,2,None
+Charmander,70,81,75,70,Fire,1,True,0,Charmeleon
+Charmeleon,73,83,76,70,Fire,1,True,1,Charizard
+Charizard,76,85,77,70,Fire/Flying,1,False,2,None
