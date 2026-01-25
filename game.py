@@ -15,15 +15,15 @@ Bit unbalanced in base stats
 No type advantage
 No IV farming
 No team amount cap
+No revives
+Sloppy silver tape gui
 Moves are hardcoded to only scratch - but made to be changed easily in the future
-Currently there is no error handling for faulty file format
-
-NEED TO CHECK THE MATH ON TS
+Math has not been fine tuned
 
 """
 class MainGame:
-    def __init__(self, fileName):
-        self.file = fileName
+    def __init__(self, filename):
+        self.file = filename
         self.masterList = importPokemonNames(self.file) # All pokemon names
 
         self.player = None
@@ -158,8 +158,8 @@ class MainGame:
             print("Import successful, running game")
             self.run = True
             self.firstStart()
-        except FileNotFoundError:
-            print("Import failed\nError: File not found")
+        except FileNotFoundError("File not found"):
+            print("Import failed")
 
     def firstStart(self):
         self.gui.write_line("Started game! Use w/a/s/d to walk around!")
@@ -203,10 +203,14 @@ class MainGame:
                 self.gui.action_button.config(command = lambda:self.changeTeamOrder(self.gui.actions_box, options))
 
             case 1: # Quit
-                self.gui.input_field()
-                options.append("Back")
-                self.gui.update_listbox(options)
-                self.gui.action_button.config(command = lambda:self.changeTeamOrder(self.gui.actions_box, options))
+                self.gui.create_input_field()
+                self.gui.create_back_button()
+                self.gui.write_line("Avoid special characters such as '. , ? !' or numbers '1 2 3 4'\n"\
+                                    "Entering previous file name will override old saves\n"\
+                                    "File type is not needed (ex: .txt, .csv etc)")
+
+                self.gui.action_button.config(command = lambda:self.quitMenu(self.gui.input_field.get()))
+                self.gui.back_button.config(command=lambda:(self.mapGui(), self.gui.back_button.destroy())) # Probably bad logic
 
     def changeTeamOrder(self, listbox, options):
         userInput = listbox.curselection()
@@ -228,18 +232,10 @@ class MainGame:
             self.gui.write_line(f"Active pokemon is now {self.player.activePokemon}")
             self.mapGui()
 
-    def quitMenu(self, listbox, options):
-        userInput = listbox.curselection()
-        
-        if len(userInput) == 0:
-            raise ValueError("No actions selected")
-        
-        if options[int(userInput[0])] == "Back":
-            self.mapGui()
-            return
-        
-        userInput = userInput[0]
-        print(f"User input - quitMenu(): {userInput}")
+    def quitMenu(self, filename):
+        exportPlayerTeam(self.player.team, filename)    
+        self.gui.write_line("Press enter again to close program")    
+        self.gui.action_button.config(command=lambda:quit())
 
     def startEncounter(self):
         num = random.randint(1,5) # 1/5 chance for an encounter
@@ -295,47 +291,39 @@ class MainGame:
         self.gui.destroy_yn_buttons()       
         self.mapGui()
 
-def exportPlayerTeam(playerTeam):
+def exportPlayerTeam(playerTeam, userFile):
     """
     Parameters: playerTeam=[Pokemon(), ...]
     Return values: Boolean
     """
-    while True:
-        print("[2] Back")
-        userFile = input("Avoid special characters such as '. , ? !' or numbers '1 2 3 4'\n"\
-                         "Entering previous file name will override old saves\n"\
-                         "Input team name:")
-        if userFile.isalpha():
-            with open(userFile + ".csv" , "w", encoding="utf-8") as newFile:
-                newFile.write("Pokemon_name,Health,Attack,Defense,Speed,Type,Level,Can_evolve,Stage,Next_evolution" + "\n")
-                for pokeObj in playerTeam:
-                    # pokemon.name
-                    # pokemon.stats.baseHp
-                    # pokemon.stats.baseAtk
-                    # pokemon.stats.baseDef
-                    # pokemon.stats.spd
-                    typing = "n/a"
-                    # pokemon.leveling.lvl
-                    # pokemon.leveling.can
-                    # pokemon.leveling.stage
-                    data = f"{pokeObj.name},{pokeObj.stats.baseHp},{pokeObj.stats.baseAtk},{pokeObj.stats.baseDef},{pokeObj.stats.spd},{typing},{pokeObj.leveling.lvl},{pokeObj.leveling.canEvolve},{pokeObj.leveling.stage}\n"
-                    newFile.write(data)
-                return False
-        elif userFile == "2":
-            return True
-        else:
-            print("Please enter valid input!")
+    try:
+        with open(userFile + ".csv" , "w", encoding="utf-8") as newFile:
+            newFile.write("Pokemon_name,Health,Attack,Defense,Speed,Type,Level,Can_evolve,Stage,Next_evolution" + "\n")
+            for pokeObj in playerTeam:
+                # pokemon.name
+                # pokemon.stats.baseHp
+                # pokemon.stats.baseAtk
+                # pokemon.stats.baseDef
+                # pokemon.stats.spd
+                typing = "n/a"
+                # pokemon.leveling.lvl
+                # pokemon.leveling.can
+                # pokemon.leveling.stage
+                data = f"{pokeObj.name},{pokeObj.stats.baseHp},{pokeObj.stats.baseAtk},{pokeObj.stats.baseDef},{pokeObj.stats.spd},{typing},{pokeObj.leveling.lvl},{pokeObj.leveling.canEvolve},{pokeObj.leveling.stage}\n"
+                newFile.write(data)
+    except OSError("Invalid filename"):
+        return
     
-def importPokemonNames(fileName):
+def importPokemonNames(filename):
     pokemonList = []
-    with open(fileName, "r", encoding="utf-8") as csvFile:
+    with open(filename, "r", encoding="utf-8") as csvFile:
         reader = csv.DictReader(csvFile)
         for pokemonData in reader:
             pokemonList.append(pokemonData["Pokemon_name"])
     return pokemonList
 
-def importPokemonByName(fileName, pokemonName, level = None):
-    with open(fileName, "r", encoding="utf-8") as csvFile:
+def importPokemonByName(filename, pokemonName, level = None):
+    with open(filename, "r", encoding="utf-8") as csvFile:
         reader = csv.DictReader(csvFile)
         for pokemonData in reader:
             if pokemonData["Pokemon_name"].lower() == pokemonName.lower():
