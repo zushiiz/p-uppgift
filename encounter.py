@@ -40,6 +40,10 @@ class Encounter:
             f"Turn: {self.turn}\n"\
             "========================================")
 
+        # Items refresh
+        self.player.potions = 1
+        self.player.pokeballs = 10
+
         self.gui.create_actions_box()
         options = ["Fight", "Pokemon", "Items", "Run"]
         self.gui.update_listbox(options)
@@ -145,7 +149,7 @@ class Encounter:
         else:
             self.nextTurn()
         
-    def playerSwapMenu(self, listbox, options, faint = False):
+    def playerSwapMenu(self, listbox, options, faint = False): # There is one instance where fainted pokemon can be sent out...
         userInput = listbox.curselection()
         
         if len(userInput) == 0:
@@ -268,6 +272,7 @@ class Encounter:
         else:
             self.gui.write_line(f"{self.opponent} escaped!")
             self.enemyAttack()
+        self.player.pokeballs -= 1
 
     def enemyAttack(self): # When only enemy attacks
         enemyAttack = random.randint(0, (len(self.opponent.attacks)-1))
