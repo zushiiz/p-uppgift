@@ -9,6 +9,16 @@ from gui import GUI
 import csv, random
 
 """
+P-Uppgift 200 Pokemon
+
+This project is a simple recreation of game features of a turn-based combat game, Pokemon
+
+Changes to game-features:
+No handling types - would require a matrix that holds all the typing data
+Max 6 per team cap - needs a storing system for game better flow which is currently not included
+Max 4 moves cap - this would be needed if the pokemons actually had movesets, but currently everything just uses scratch
+Main game logic - runs through class methods instead of file functions
+
 Notes:
 Jolteon and Flareon doesnt exist
 Bit unbalanced in base stats
@@ -19,6 +29,7 @@ No revives
 Sloppy silver tape gui
 Moves are hardcoded to only scratch - but made to be changed easily in the future
 Math has not been fine tuned
+Could have more thorough error handling
 
 """
 class MainGame:
@@ -73,7 +84,11 @@ class MainGame:
         :return : None
         """
         userInput = listbox.curselection() # Gives tuple of indices
-        userInput = int(userInput[0])
+
+        if len(userInput) == 0:
+            raise ValueError("No actions selected")
+
+        userInput = userInput[0]
         print(f"User input: {userInput}")
         match userInput:
             case 0: # Prepares menu and parameters for newGameMenu() method
@@ -158,8 +173,10 @@ class MainGame:
             print("Import successful, running game")
             self.run = True
             self.firstStart()
-        except FileNotFoundError("File not found"):
-            print("Import failed")
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Pokemon data file not found: {userFile}")
+        except KeyError as e:
+            raise ValueError(f"Missing value: {e}")
 
     def firstStart(self):
         self.gui.write_line("Started game! Use w/a/s/d to walk around!")
@@ -318,28 +335,36 @@ def exportPlayerTeam(playerTeam, userFile):
                 # pokemon.leveling.stage
                 data = f"{pokeObj.name},{pokeObj.stats.baseHp},{pokeObj.stats.baseAtk},{pokeObj.stats.baseDef},{pokeObj.stats.spd},{typing},{pokeObj.leveling.lvl},{pokeObj.leveling.canEvolve},{pokeObj.leveling.stage}\n"
                 newFile.write(data)
-    except OSError("Invalid filename"):
-        return
+    except OSError as e:
+        raise OSError(f"Invalid filename: {e}")
     
 def importPokemonNames(filename):
     pokemonList = []
-    with open(filename, "r", encoding="utf-8") as csvFile:
-        reader = csv.DictReader(csvFile)
-        for pokemonData in reader:
-            pokemonList.append(pokemonData["Pokemon_name"])
-    return pokemonList
+    try:
+        with open(filename, "r", encoding="utf-8") as csvFile:
+            reader = csv.DictReader(csvFile)
+            for pokemonData in reader:
+                pokemonList.append(pokemonData["Pokemon_name"])
+        return pokemonList
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Pokemon data file not found: {filename}")  
+    except KeyError as e:
+        raise ValueError(f"Missing value: {e}")
 
 def importPokemonByName(filename, pokemonName, level = None):
-    with open(filename, "r", encoding="utf-8") as csvFile:
-        reader = csv.DictReader(csvFile)
-        for pokemonData in reader:
-            if pokemonData["Pokemon_name"].lower() == pokemonName.lower():
-                if level == None:
-                    level = pokemonData["Level"]
-                stats = Stats(pokemonData["Health"], pokemonData["Attack"], pokemonData["Defense"], pokemonData["Speed"])
-                level = Leveling(level, pokemonData["Can_evolve"], pokemonData["Stage"])
-                return Pokemon(pokemonData["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, pokemonData["Next_evolution"])
-            
+    try:
+        with open(filename, "r", encoding="utf-8") as csvFile:
+            reader = csv.DictReader(csvFile)
+            for pokemonData in reader:
+                if pokemonData["Pokemon_name"].lower() == pokemonName.lower():
+                    if level == None:
+                        level = pokemonData["Level"]
+                    stats = Stats(pokemonData["Health"], pokemonData["Attack"], pokemonData["Defense"], pokemonData["Speed"])
+                    level = Leveling(level, pokemonData["Can_evolve"], pokemonData["Stage"])
+                    return Pokemon(pokemonData["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, pokemonData["Next_evolution"])
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Pokemon data file not found: {filename}")
+
 def getEvolution(pokemonList, pokemonObj, file):
     for pokemonName in pokemonList:
         if pokemonName == pokemonObj.evolution:
