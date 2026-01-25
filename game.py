@@ -254,7 +254,8 @@ class MainGame:
     def encounterStopped(self, instance):
         print(f"Enemy defeat: {self.encounterInstance.playerWin}")
         self.gui.write_line("Encounter finished") # Remove later
-        print(self.encounterInstance.playerWin)
+        print(f"Player win: {self.encounterInstance.playerWin}")
+        print(f"Game over: {self.encounterInstance.gameOver}")
 
         if self.encounterInstance.playerWin == True:
             self.gui.write_line("You won!")
@@ -284,13 +285,11 @@ class MainGame:
             self.gui.write_line("Avoid special characters such as '. , ? !' or numbers '1 2 3 4'\n"\
                                 "Entering previous file name will override old saves\n"\
                                 "File type is not needed (ex: .txt, .csv etc)")
-
+            self.gui.create_input_field()
             self.gui.action_button.config(command = lambda:self.quitMenu(self.gui.input_field.get()))
 
         else:
-            self.mapGui()
-
-        print(pokemon.leveling)       
+            self.mapGui()    
     
     def evolveMsg(self, pokemon, nextEvolution):
         preEvo = pokemon.name
