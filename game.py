@@ -15,7 +15,7 @@ Bit unbalanced in base stats
 No type advantage
 No IV farming
 No team amount cap
-Moves are hardcoded to only scratch for now
+Moves are hardcoded to only scratch - but made to be changed easily in the future
 Currently there is no error handling for faulty file format
 
 NEED TO CHECK THE MATH ON TS
@@ -169,7 +169,7 @@ class MainGame:
         """
         if self.run == True:
             print("Run successful")
-            self.gui.disable_terminal()
+            # self.gui.disable_terminal()
             self.gui.show_map(self.map)
             self.gui.clear_action_frame()
     
@@ -207,17 +207,42 @@ class MainGame:
         print(f"Enemy defeat: {self.encounterInstance.playerWin}")
         self.gui.write_line("Encounter finished") # Remove later
         print(self.encounterInstance.playerWin)
+
         if self.encounterInstance.playerWin == True:
+            self.gui.write_line("You won!")
+
+            pokemon = self.player.activePokemon # Temporary local variable for activePokemon
             expGained = self.encounterInstance.opponent.leveling.droppedExp
             print(f"Exp dropped :{expGained}")
-            nextEvolutions = getEvolutionName(self.masterList, self.player.activePokemon, self.file)
-            print(f"Pokemon evolutions: {nextEvolutions}")
-            self.player.activePokemon.gainExp(expGained, nextEvolutions)
-            print(self.player.activePokemon.leveling)
-        
-        # self.mapGui()
-        
+            self.gui.write_line(f"{pokemon.name} gained {expGained} exp\n"\
+                                f"{pokemon.name} {pokemon.leveling}")
+
+            nextEvolution = getEvolution(self.masterList, pokemon, self.file)
+            print(f"Pokemon evolutions: {nextEvolution}")
+            pokemon.gainExp(10000000)
+            
+            if pokemon.leveling.lvl >= pokemon.levelToEvolve and pokemon.leveling.canEvolve == True:
+                self.gui.write_line(f"{pokemon.name} is evolving!")
+                self.gui.clear_action_frame()
+                self.gui.create_yn_buttons()
+                self.gui.yes_button.config(command=lambda:self.evolveMsg(pokemon, nextEvolution))
+                self.gui.no_button.config(command=lambda:(self.gui.destroy_yn_buttons(), self.mapGui()))
+
+            else:
+                self.mapGui()
+
+        else:
+            self.mapGui()
+
+        print(pokemon.leveling)       
     
+    def evolveMsg(self, pokemon, nextEvolution):
+        preEvo = pokemon.name
+        pokemon.evolve(nextEvolution)
+        self.gui.write_line(f"{preEvo} successfully evolved to {pokemon}")
+        self.gui.destroy_yn_buttons()       
+        self.mapGui()
+
 def exportPlayerTeam(playerTeam):
     """
     Parameters: playerTeam=[Pokemon(), ...]
@@ -268,17 +293,11 @@ def importPokemonByName(fileName, pokemonName, level = None):
                 level = Leveling(level, pokemonData["Can_evolve"], pokemonData["Stage"])
                 return Pokemon(pokemonData["Pokemon_name"], stats, MoveList(Attack("Scratch")), level, pokemonData["Next_evolution"])
             
-def getEvolutionName(pokemonList, pokemonObj, file):
-    evolutionDict = {}
+def getEvolution(pokemonList, pokemonObj, file):
     for pokemonName in pokemonList:
         if pokemonName == pokemonObj.evolution:
-            pokemonObj = importPokemonByName(file, pokemonName)
-            evolutionDict[pokemonObj.name] = True
-            if pokemonObj.leveling.canEvolve == True:
-                evolutionDict[importPokemonByName(file, pokemonObj.evolution).name] = False
-            else:
-                break
-    return evolutionDict
+            newPokemonObj = importPokemonByName(file, pokemonName)
+    return newPokemonObj
 
 def main():
 
