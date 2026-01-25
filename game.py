@@ -279,6 +279,14 @@ class MainGame:
             else:
                 self.mapGui()
 
+        elif self.encounterInstance.gameOver == True:
+            self.gui.write_line("Game Over, enter teamname to save your team")
+            self.gui.write_line("Avoid special characters such as '. , ? !' or numbers '1 2 3 4'\n"\
+                                "Entering previous file name will override old saves\n"\
+                                "File type is not needed (ex: .txt, .csv etc)")
+
+            self.gui.action_button.config(command = lambda:self.quitMenu(self.gui.input_field.get()))
+
         else:
             self.mapGui()
 

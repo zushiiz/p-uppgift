@@ -11,6 +11,7 @@ class Encounter:
         self.onStop = onStop
         self.stop = False
         self.playerWin = False
+        self.gameOver = False
     
     def nextTurn(self):
         self.turn += 1
@@ -132,6 +133,7 @@ class Encounter:
                 print("Player defeat. Stopping encounter")
 
                 self.gui.write_line(f"All {self.player}'s pokemon have died")
+                self.gameOver = True
                 self.stopEncounter()
                 
             else: # I think this has some logic errors?
