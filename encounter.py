@@ -315,7 +315,7 @@ class Encounter:
         print(self.playerPokemon.stats)
         print(self.opponent.stats)
 
-        # if self.playerPokemon.stats.hp <= 0: THIS LOGIC CURRENTLY DOES NOT WORK
+        # if self.playerPokemon.stats.hp <= 0: THIS LOGIC CURRENTLY DOES NOT WORK 
         #     if self.checkPlayerStatus():
         #         print("Player defeat. Stopping encounter")
 
