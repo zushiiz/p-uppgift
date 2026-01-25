@@ -191,6 +191,13 @@ class GUI():
         self.action_button.grid()
 
     """Button methods - button_frame"""
+    def create_back_button(self):
+        self.back_button = tk.Button(
+            self._button_frame,
+            text="Back"
+        )
+        self.back_button.grid()
+
     def create_yn_buttons(self):
         self.action_button.grid_forget()
 
