@@ -85,6 +85,9 @@ class MainGame:
 
             case 1:
                 self.loadGameMenu()
+            
+            case 2:
+                quit()
 
     def newGameMenu(self, listbox): # Menu that lets user choose starter pokemon
         """
@@ -176,18 +179,67 @@ class MainGame:
             options = ["Team", "Quit"]
             self.gui.update_listbox(options)
 
+            self.gui.action_button.config(command=lambda:self.mapUiMenu(self.gui.actions_box))
+
             self.gui.create_dpad()
             self.gui.up.config(command = lambda: (self.map.movePlayer(0, -1), self.gui.refresh_map(self.map), self.startEncounter()))
             self.gui.down.config(command = lambda: (self.map.movePlayer(0, 1), self.gui.refresh_map(self.map), self.startEncounter()))
             self.gui.left.config(command = lambda: (self.map.movePlayer(-1, 0), self.gui.refresh_map(self.map), self.startEncounter()))
             self.gui.right.config(command = lambda: (self.map.movePlayer(1, 0), self.gui.refresh_map(self.map), self.startEncounter()))
+    
+    def mapUiMenu(self, listbox):
+        userInput = listbox.curselection()
+        userInput = userInput[0]
+        options = []
+        self.gui.disable_map()
+        self.gui.destroy_dpad()
 
-            # menuActionIndex = self.map.userInterface()
-            # match menuActionIndex:
-            #     case 0:
-            #         self.player.changeActivePokemon()
-            #     case 1:
-            #         self.run = exportPlayerTeam(self.player.team)     
+        match userInput:
+            case 0: # Team
+                for e in self.player.team:
+                    options.append(f"{e.name} - {e.stats.hp}/{e.stats.maxHp}")
+                options.append("Back")
+                self.gui.update_listbox(options)
+                self.gui.action_button.config(command = lambda:self.changeTeamOrder(self.gui.actions_box, options))
+
+            case 1: # Quit
+                self.gui.input_field()
+                options.append("Back")
+                self.gui.update_listbox(options)
+                self.gui.action_button.config(command = lambda:self.changeTeamOrder(self.gui.actions_box, options))
+
+    def changeTeamOrder(self, listbox, options):
+        userInput = listbox.curselection()
+        
+        if len(userInput) == 0:
+            raise ValueError("No actions selected")
+        
+        if options[int(userInput[0])] == "Back":
+            self.mapGui()
+            return
+        
+        userInput = userInput[0]
+        print(f"User input - changeTeamOrder(): {userInput}")
+
+        if self.player.team[userInput].fainted == True:
+            self.gui.write_line("Cannot use fainted pokemon") # HERERERE
+        else:        
+            self.player.changeActivePokemon(userInput)
+            self.gui.write_line(f"Active pokemon is now {self.player.activePokemon}")
+            self.mapGui()
+
+    def quitMenu(self, listbox, options):
+        userInput = listbox.curselection()
+        
+        if len(userInput) == 0:
+            raise ValueError("No actions selected")
+        
+        if options[int(userInput[0])] == "Back":
+            self.mapGui()
+            return
+        
+        userInput = userInput[0]
+        print(f"User input - quitMenu(): {userInput}")
 
     def startEncounter(self):
         num = random.randint(1,5) # 1/5 chance for an encounter
@@ -300,7 +352,6 @@ def getEvolution(pokemonList, pokemonObj, file):
     return newPokemonObj
 
 def main():
-
     game = MainGame("data.txt") # Hardcoded :thumbs_up:
     game.start()
     game.gui.root.mainloop()
