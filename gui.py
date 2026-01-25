@@ -90,7 +90,7 @@ class GUI():
         self.root.bind("d", lambda event: self.right.invoke())
         self.root.bind("a", lambda event: self.left.invoke())
 
-    """Terminal Methods"""
+    """Terminal Methods - terminal_frame"""
     def write_line(self, msg):
         self.display_terminal.config(state="normal")
         self.display_terminal.insert("end", f"{msg}\n")
@@ -103,7 +103,7 @@ class GUI():
     def disable_terminal(self):
         self.terminal_frame.grid_forget()
 
-    """Player action methods"""
+    """Player action methods - actions_frame"""
     def update_listbox(self, contents):
         self.create_actions_box()
         for i in contents:
@@ -123,7 +123,7 @@ class GUI():
         self.input_field = tk.Entry(self._actions_frame)
         self.input_field.pack()
 
-    """Map methods"""
+    """Map methods - terminal_frame"""
     def show_map(self, map):
         self.gui_map_frame.grid(column=1, row=0, rowspan=2)
         self.refresh_map(map)
@@ -131,7 +131,6 @@ class GUI():
     def disable_map(self):
         self.gui_map_frame.grid_forget()
     
-    # Destroys and recreates the visualized map
     def refresh_map(self, map):
         for tile in self.gui_map_frame.winfo_children():
             tile.destroy()
@@ -190,3 +189,22 @@ class GUI():
     def destroy_dpad(self):
         self._dpad_frame.destroy()
         self.action_button.grid()
+
+    """Button methods - button_frame"""
+    def create_yn_buttons(self):
+        self.action_button.grid_forget()
+
+        self.yes_button = tk.Button(
+            self._button_frame,
+            text="Yes"
+        )
+        self.no_button = tk.Button(
+            self._button_frame,
+            text="No"
+        )
+        self.yes_button.grid()
+        self.no_button.grid()
+    
+    def destroy_yn_buttons(self):
+        self.yes_button.destroy()
+        self.no_button.destroy()
