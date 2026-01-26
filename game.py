@@ -42,7 +42,11 @@ class MainGame:
     map exploration, encounters, saving/loading, and GUI coordination
     Acts as central systems hub
     """
-    def __init__(self, filename):
+    def __init__(self, filename): # Defines attributes for the class when initializing
+        """
+        :param filename: string (file formatted)
+        initializes class: main()
+        """
         self.file = filename
         self.masterList = importPokemonNames(self.file) # All pokemon names
 
@@ -55,6 +59,7 @@ class MainGame:
     def generateRandomEnemy(self): # Generates one random pokemon object for an encounter
         """
         :return enemy: Pokemon()
+        calls method: startEncounter()
         """
         playerLevels = []
         for pokemonObj in self.player.team:
@@ -66,11 +71,19 @@ class MainGame:
         return enemy
 
     def start(self): # Program starting point menu formatting
+        """
+        calls method: main()
+        method calls: _storeUsername()
+        """
         self.gui.write_line("Enter a username")
         self.gui.create_input_field()
         self.gui.action_button.config(command = lambda: self._storeUsername(self.gui.input_field.get()))
 
     def startMenu(self): # Formats starting menu
+        """
+        calls method: _storeUsername(), newGameMenu() 
+        method calls: startMenuActions()
+        """
         print("Starting Menu...")
         self.gui.write_line(f"Welcome {self.username}!")
         options = ["New Game", "Load Game", "Quit Game"]
@@ -80,16 +93,14 @@ class MainGame:
     def startMenuActions(self, listbox): # Handles the logic for if user wants to load or create new game
         """
         :param listbox : tk.Listbox
+        calls method: StartMenu()
+        method calls: newGameMenu(), loadGameMenu(), quit()
         """
-        userInput = listbox.curselection() # Gives tuple of indices
+        optionIndex = checkOptionIndex(listbox)
+        print(f"User input: {optionIndex}")
 
-        if len(userInput) == 0:
-            raise ValueError("No actions selected")
-
-        userInput = userInput[0]
-        print(f"User input: {userInput}")
-        match userInput:
-            case 0: # Prepares menu and parameters for newGameMenu() method
+        match optionIndex: # Prepares menu and parameters for newGameMenu() method
+            case 0: 
                 self.gui.write_line("Pick your starter Pokemon!")
                 options = ["Bulbasaur", "Squirtle", "Charmander", "Back"]
                 self.gui.update_listbox(options)
@@ -97,30 +108,30 @@ class MainGame:
 
             case 1:
                 self.loadGameMenu()
-            
             case 2:
                 quit()
 
     def newGameMenu(self, listbox): # Menu that lets user choose starter pokemon
         """
         :param listbox: tk.Listbox
+        calls method: startMenuActions()
+        method calls: firstStart()
         """        
-        userInput = int(listbox.curselection()[0])
+        userInput = checkOptionIndex(listbox)
         print("New Game")
         playerTeam = []
-        username = ""
         match userInput: # Can be made into a function/method
             case 0:
                 playerTeam.append(importPokemonByName(self.file, "Bulbasaur"))
-                self.player = Player(username, playerTeam)
+                self.player = Player(self.username, playerTeam)
                 self.run = True
             case 1:
                 playerTeam.append(importPokemonByName(self.file, "Squirtle"))
-                self.player = Player(username, playerTeam)
+                self.player = Player(self.username, playerTeam)
                 self.run = True
             case 2:
                 playerTeam.append(importPokemonByName(self.file, "Charmander"))
-                self.player = Player(username, playerTeam)
+                self.player = Player(self.username, playerTeam)
                 self.run = True
             case _:
                 self.gui.clear_action_frame()
@@ -128,7 +139,11 @@ class MainGame:
 
         self.firstStart()
 
-    def loadGameMenu(self): # Menu that lets user import own file with correct format      
+    def loadGameMenu(self): # Menu that lets user import own file with correct format   
+        """
+        calls method: startMenuActions()
+        method calls: importPlayerTeam()
+        """   
         self.gui.write_line("OBS! It has to be a file with correct csv Format and in the correct directory!\n" \
                             "Input the FULL filename/path in the field")
         self.gui.create_input_field()
@@ -137,6 +152,8 @@ class MainGame:
     def _storeUsername(self, input): # Updates the username attribute
         """
         :param input: string
+        calls method: start()
+        method calls: startMenu()
         """
         if input == "":
             self.username = "Guest"
@@ -144,11 +161,13 @@ class MainGame:
         else:
             self.username = input
             print(f"updated - self.username={self.username}")
-        self.startMenu()      
+        self.startMenu()
 
     def importPlayerTeam(self, userFile): # Imports the file that user enters
         """
         :param userFile : string(file path)
+        calls method: loadGameMenu()
+        method calls: firstStart()
         """        
         playerTeam = []
         print(f"Importing file:{userFile}")
@@ -169,10 +188,18 @@ class MainGame:
             raise ValueError(f"Missing value: {e}")
 
     def firstStart(self): # Runs once on start
+        """
+        calls method: importPlayerTeam
+        method calls: mapGui()
+        """
         self.gui.write_line("Started game! Use w/a/s/d to walk around!")
         self.mapGui()
 
     def mapGui(self): # Creates/Formats the ui for the map and dpad
+        """
+        calls method: firstStart(), mapUiMenu(), changeTeamOrder(), startEncounter(), evolveMsg()
+        method calls: startEncounter(), mapUiMenu()
+        """
         if self.run == True:
             print("Run successful")
             # self.gui.disable_terminal()
@@ -193,6 +220,8 @@ class MainGame:
     def mapUiMenu(self, listbox): # Formats ui when player wants to quit or change team during the map interface
         """
         :param listbox: tk.Listbox()
+        calls method: mapGui()
+        method calls: changeTeamOrder(), quitMenu(), mapGui()
         """
         userInput = listbox.curselection()
         userInput = userInput[0]
@@ -222,17 +251,12 @@ class MainGame:
         """
         :param listbox: tk.Listbox()
         :param options: [string, ...]
+        calls method: mainUiMenu()
+        method calls: mapGui()
         """
-        userInput = listbox.curselection()
-        
-        if len(userInput) == 0:
-            raise ValueError("No actions selected")
-        
-        if options[int(userInput[0])] == "Back":
+        userInput = checkOptionIndex(listbox, options)
+        if not userInput:
             self.mapGui()
-            return
-        
-        userInput = userInput[0]
         print(f"User input - changeTeamOrder(): {userInput}")
 
         if self.player.team[userInput].fainted == True:
@@ -244,13 +268,18 @@ class MainGame:
 
     def quitMenu(self, filename): # Calls exportPlayerTeam() function to save then quits
         """
-        :param filename: string
+        :param filename: string (file formatted)
+        calls method: mapUiMenu(), encounterStopped()
         """
         exportPlayerTeam(self.player.team, filename)    
         self.gui.write_line("Press enter again to close program")    
         self.gui.action_button.config(command=lambda:quit())
 
     def startEncounter(self): # Chance to instantiate and start an encounter
+        """ Should 
+        calls method: mapGui()
+        method calls: Encounter.start()
+        """
         num = random.randint(1,5) # 1/5 chance for an encounter
         if num == 1:
             enemy = self.generateRandomEnemy()
@@ -262,11 +291,13 @@ class MainGame:
                                 enemy, 
                                 self.gui,
                                 onStop=self.encounterStopped)
-            self.encounterInstance.startEncounter()
+            self.encounterInstance.start()
 
     def encounterStopped(self, instance): # Logic for after an encounter ends (ex. gaining exp, game over, etc)
         """
         :param instance: Encounter()
+        calls method: Encounter.stopEncounter()
+        method calls: mapGui(), evolveMsg()
         """
         print(f"Enemy defeat: {self.encounterInstance.playerWin}")
         self.gui.write_line("Encounter finished") # Remove later
@@ -286,7 +317,7 @@ class MainGame:
             print(f"Pokemon evolutions: {nextEvolution}")
             pokemon.gainExp(expGained)
             
-            if pokemon.leveling.lvl >= pokemon.levelToEvolve and pokemon.leveling.canEvolve == True:
+            if pokemon.leveling.lvl >= pokemon.levelToEvolve and pokemon.leveling.canEvolve == True: # Evolving logic
                 self.gui.write_line(f"{pokemon.name} is evolving!")
                 self.gui.clear_action_frame()
                 self.gui.create_yn_buttons()
@@ -295,7 +326,7 @@ class MainGame:
 
             else:
                 self.mapGui()
-
+        # Game over logic
         elif self.encounterInstance.gameOver == True:
             self.gui.write_line("Game Over, enter teamname to save your team")
             self.gui.write_line("Avoid special characters such as '. , ? !' or numbers '1 2 3 4'\n"\
@@ -304,13 +335,15 @@ class MainGame:
             self.gui.create_input_field()
             self.gui.action_button.config(command = lambda:self.quitMenu(self.gui.input_field.get()))
 
-        else:
+        else: # Player run
             self.mapGui()    
     
     def evolveMsg(self, pokemon, nextEvolution): # Updates Pokemon-object to its data for evolution
         """
         :param pokemon: Pokemon()
         :param nextEvolution: pokemon()
+        calls method: encounterStopped()
+        method calls: mapGui()
         """
         preEvo = pokemon.name
         pokemon.evolve(nextEvolution)
@@ -320,8 +353,10 @@ class MainGame:
 
 def exportPlayerTeam(playerTeam, userFile): # Creates new file, formats and saves the players team
     """
-    Parameters: playerTeam=[Pokemon(), ...]
-    Return values: Boolean
+    :params playerTeam: [Pokemon(), ...]
+    :params userFile: string
+    :Return : Boolean
+    calls method: quitMenu()
     """
     try:
         with open(userFile + ".csv" , "w", encoding="utf-8") as newFile:
@@ -389,7 +424,16 @@ def getEvolution(pokemonList, pokemonObj, file): # Checks a pokemons next evolut
             newPokemonObj = importPokemonByName(file, pokemonName)
     return newPokemonObj
 
-def main():
+def checkOptionIndex(listbox, options = []): # Checks if user selected an action MOVE TO GUI?
+    optionIndex = listbox.curselection() # Gives tuple of indices
+    if len(optionIndex) == 0:
+        raise ValueError("No actions selected")
+    elif options[int(optionIndex[0])] == "Back":
+        print("Back")
+        return False
+    return optionIndex[0]
+
+def main(): # Instantiates a game and starts
     game = MainGame("data.txt") # Hardcoded file :thumbs_up:
     game.start()
     game.gui.root.mainloop()

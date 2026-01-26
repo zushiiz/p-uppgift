@@ -6,19 +6,29 @@ class Encounter:
     Controls a turn-based battle encounter between the player and an opponent
     Handles turn flow, player actions (fight, swap, items, run), combat resolution, fainting, catching Pokémon, and GUI interaction within an encounter
     """
-    def __init__(self, player, opponent, gui, onStop):
-
+    def __init__(self, player, opponent, gui, onStop): # Defines attributes for the class when initializing
+        """
+        :param player: Player()
+        :param opponent: Pokemon()
+        :param gui: Gui()
+        :param onStop: stoppedEncounter()
+        initializes class: MainGame.startEncounter()
+        """
         self.player = player
         self.playerPokemon = self.player.activePokemon
         self.opponent = opponent
         self.gui = gui
         self.turn = 1
-        self.onStop = onStop # function
+        self.onStop = onStop # Method
         self.stop = False
         self.playerWin = False
         self.gameOver = False
     
-    def nextTurn(self):
+    def nextTurn(self): # +1 turn, sending you to the starting encounter ui
+        """
+        calls method: playerFightMenu(), playerSwapMenu(), playerItemsMenu(), potionsMenu()
+        method calls: playerAction()
+        """
         self.turn += 1
 
         print(f"Turn: {self.turn}")
@@ -31,11 +41,14 @@ class Encounter:
         self.gui.update_listbox(options)
         self.gui.action_button.config(command = lambda:self.playerAction(self.gui.actions_box))        
 
-    def startEncounter(self): # Starts encounter logic
+    def start(self): # Starts encounter logic
+        """
+        calls method: MainGame.startEncounter()
+        method calls: playerAction()
+        """
         print("Encounter start")
         self.gui.write_line(f"You've encountered a wild {self.opponent}!")
         self.gui.write_line(f"{self.player} sent out {self.playerPokemon}")
-
         self.gui.write_line(
             "========================================\n"\
             f"Turn: {self.turn}\n"\
@@ -45,11 +58,16 @@ class Encounter:
         self.player.potions = 1
         self.player.pokeballs = 10
 
+        # options listbox
         options = ["Fight", "Pokemon", "Items", "Run"]
         self.gui.update_listbox(options)
         self.gui.action_button.config(command = lambda:self.playerAction(self.gui.actions_box))
 
     def backToEncounterMenu(self): # Takes you back to the first encounter ui
+        """
+        calls method: playerFightMenu(), playerSwapMenu(), playerItemsMenu(), potionsMenu()
+        method calls: playerAction()
+        """
         options = ["Fight", "Pokemon", "Items", "Run"]
         self.gui.update_listbox(options)
         self.gui.action_button.config(command = lambda:self.playerAction(self.gui.actions_box))
@@ -57,14 +75,14 @@ class Encounter:
     def playerAction(self, listbox): # Interface logic that calls the one of the four actions players can (fight, swap, items, run) do
         """
         :param listbox: tk.Listbox()
+        calls method: nextTurn(), start(), backToEncounter()
+        method calls: playerFightMenu(), playerSwapMenu(), playerItemsMenu(), stopEncounter()
         """
-        userInput = listbox.curselection()
 
+        userInput = listbox.curselection()
         if len(userInput) == 0:
             raise ValueError("No actions selected")
-        
         userInput = userInput[0]
-        print(f"playerAction(): {userInput}")
 
         print(f"User input - playerAction(): {userInput}")
         options = []        
@@ -102,12 +120,12 @@ class Encounter:
         """
         :param listbox: tk.Listbox()
         :param options: [string, ...]
+        calls method: playerAction()
+        method calls: 
         """
         userInput = listbox.curselection()
-
         if len(userInput) == 0:
             raise ValueError("No actions selected")
-
         if options[int(userInput[0])] == "Back":
             self.backToEncounterMenu()
             return
@@ -161,6 +179,8 @@ class Encounter:
         :param listbox: tk.Listbox()
         :param options: [string, ...]
         :param faint: boolean
+        calls method: playerAction(), playerFightMenu()
+        method calls: backToEncounter(), enemyAttack(), nextTurn()
         """
         userInput = listbox.curselection()
         
@@ -189,6 +209,8 @@ class Encounter:
         """
         :param listbox: tk.Listbox()
         :param options: [string, ...]
+        calls method: playerAction()
+        method calls: potionsMenu(), nextTurn()
         """
         userInput = listbox.curselection()
         
@@ -224,16 +246,17 @@ class Encounter:
         """
         :param listbox: tk.Listbox()
         :param options: [string, ...]
+        calls method: playerItemsMenu() 
+        method calls: backToEncounter(), enemyAttack(), nextTurn()
         """        
         userInput = listbox.curselection()
-        
         if len(userInput) == 0:
             raise ValueError("No actions selected")
-        
         if options[int(userInput[0])] == "Back":
             self.backToEncounterMenu()
             return
         userInput = userInput[0]
+
         if self.player.team[userInput].fainted == True: #Silvertape fix
             self.gui.write_line("Pokemon has already fainted, cannot heal")
             return
@@ -307,6 +330,7 @@ class Encounter:
         self.player.pokeballs -= 1
 
     def enemyAttack(self): # Enemy attacks player pokemon, also handles a bit of logic if player pokemon faints, should probably move it somewhere
+        
         enemyAttack = random.randint(0, (len(self.opponent.movelist)-1))
         self.gui.write_line(f"{self.opponent.name} used {self.opponent.movelist[enemyAttack]}")
         self.opponent.attack(self.playerPokemon, enemyAttack)
@@ -335,5 +359,9 @@ class Encounter:
         #         print(f"{self.player} sent out {self.playerPokemon}")                                
 
     def stopEncounter(self): # Stops encounter and runs onStop function in game.py
+        """
+        calls method: playerAction(), playerFightMenu(), enemyAttack()
+        method calls: MainGame.stoppedEcnounter()
+        """
         self.stop = True
         self.onStop(self)

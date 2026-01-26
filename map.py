@@ -3,7 +3,11 @@ class Map:
     Class desc:
     Creates map and tracks/updates player position
     """
-    def __init__(self, height = 10, width = 10):
+    def __init__(self, height = 10, width = 10): # Defines attributes for the class when initializing
+        """
+        :param height: integer
+        :param width: integer
+        """
         self.h = height
         self.w = width
         self.mapIcon = "o"
@@ -16,7 +20,7 @@ class Map:
         self.playerY = 1
         self.grid[self.playerY][self.playerX] = self.playerIcon
 
-    def __str__(self):
+    def __str__(self): # Returns all map elements as a grid, though x and y are inverted
         visualizedMap = ""
         for col in self.grid:
             for row in col:
@@ -29,7 +33,6 @@ class Map:
         """
         :param y: integer
         :param x: integer
-        :return : None
         """
         y = self.playerY + y
         x = self.playerX + x

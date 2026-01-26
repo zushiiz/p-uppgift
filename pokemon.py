@@ -7,12 +7,19 @@ class Pokemon():
     Class desc:
     Handles experience gain, stat scaling, attacking, taking damage, fainting, and evolution logic
     """
-    def __init__(self, name, stats = Stats(), moves = Movelist(Attack("Scratch")), leveling = Leveling(), nextEvolution = "a"): #Change some default data
+    def __init__(self, name, stats = Stats(), moves = Movelist(Attack("Scratch")), leveling = Leveling(), nextEvolution = "a"): # Defines attributes for the class when initializing
+        """
+        :param name: string
+        :param stats: Stats()
+        :param moves: Movelist()
+        :param leveling: Leveling()
+        :param nextEvolution: string
+        """
         self.name = name
 
         self.stats = stats
         self.leveling = leveling
-        if self.leveling.lvl > 1:
+        if self.leveling.lvl > 1: # Adjusts stats based on level
             self.stats.increaseAllStats(self.leveling.lvl)
         self.movelist = moves
 
@@ -25,10 +32,10 @@ class Pokemon():
 
         self.fainted = False
 
-    def __str__(self):
+    def __str__(self): # Returns name as string, adds fainted if it is fainted
         if self.fainted == True:
             return (f"{self.name}, fainted")
-        return (f"{self.name}, lvl:{self.leveling.lvl}")
+        return (f"{self.name}")
     
     def gainExp(self, exp): # Increases exp data
         """

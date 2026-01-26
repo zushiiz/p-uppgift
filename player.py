@@ -3,7 +3,11 @@ class Player:
     Class desc:
     Handles team management, swapping, and healing Pokémon
     """
-    def __init__(self, username = "Guest", team = ["Empty"]):
+    def __init__(self, username = "Guest", team = ["Empty"]): # Defines attributes for the class when initializing
+        """
+        :param username: string
+        :param team: [Pokemon(), ...]
+        """
         self.name = username
         self.team = team
         self.activePokemon = team[0]
@@ -11,7 +15,7 @@ class Player:
         self.potions = 10
         self.pokeballs = 10
     
-    def __str__(self):
+    def __str__(self): # Returns the player name as a string
         return (f"User: {self.name}")
     
     def swapOption(self, index): # Changes active pokemon for an encounter

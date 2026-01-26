@@ -3,7 +3,12 @@ class Leveling():
     Class desc:
     Stores and handles most level related data
     """
-    def __init__(self, level = 1, evolve = True, evolutionStage = 0):
+    def __init__(self, level = 1, evolve = True, evolutionStage = 0): # Defines attributes for the class when initializing
+        """
+        :param level: integer
+        :param evolve: boolean
+        :param evolutionStage: integer
+        """
         self.lvl = int(level)
         self.exp = 0 # Current amount of exp
         self.droppedExp = (self.lvl * 10000) // 6 # Amount of exp dropped when defeated
@@ -19,7 +24,7 @@ class Leveling():
                 self.canEvolve = evolve
         self.stage = int(evolutionStage)
     
-    def __str__(self):
+    def __str__(self): # Returns level, exp and amount of exp for next level as string
         return f"Lvl. {self.lvl}: {self.exp}/{self._nextLvl}"
 
     def increaseExperience(self, ammount): # Increases exp and calls levelUp()-method when threshold reached

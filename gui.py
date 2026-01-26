@@ -9,7 +9,7 @@ class GUI():
     Notes:
     Most places uses grid(), but some uses pack(), should probably change it for consistency
     """
-    def __init__(self):
+    def __init__(self): # Defines attributes for the class when initializing, and packs/grids starting widgets
         self.root = tk.Tk()
         self.root.title("main-window")
         window_width = 800
@@ -38,10 +38,9 @@ class GUI():
             fg="white",
             yscrollcommand = scrollbar.set
         )
-        self.display_terminal.pack(side="left", fill="both", expand=True)
+        self.display_terminal.pack(side="left", fill="both", expand=True) # Fills entire frame
         scrollbar.config(command=self.display_terminal.yview)
-
-        self.display_terminal.config(state="disabled")
+        self.display_terminal.config(state="disabled") # Disables user interaction
 
         """Player actions(listbox)"""
         self._actions_frame = tk.Frame(
@@ -71,7 +70,7 @@ class GUI():
         self.action_button = tk.Button(
             self._button_frame,
             text = "Confirm",
-            command=lambda:print(None)
+            command=lambda:print("No commands given")
         )
         self.action_button.grid()         
 
