@@ -88,15 +88,14 @@ class MainGame:
         self.gui.write_line(f"Welcome {self.username}!")
         options = ["New Game", "Load Game", "Quit Game"]
         self.gui.update_listbox(options)
-        self.gui.action_button.config(command = lambda:self.startMenuActions(self.gui.actions_box))        
+        self.gui.action_button.config(command = lambda:self.startMenuActions())        
 
-    def startMenuActions(self, listbox): # Handles the logic for if user wants to load or create new game
+    def startMenuActions(self): # Handles the logic for if user wants to load or create new game
         """
-        :param listbox : tk.Listbox
         calls method: StartMenu()
         method calls: newGameMenu(), loadGameMenu(), quit()
         """
-        optionIndex = checkOptionIndex(listbox)
+        optionIndex = self.gui.checkOptionIndex()
         print(f"User input: {optionIndex}")
 
         match optionIndex: # Prepares menu and parameters for newGameMenu() method
@@ -104,23 +103,22 @@ class MainGame:
                 self.gui.write_line("Pick your starter Pokemon!")
                 options = ["Bulbasaur", "Squirtle", "Charmander", "Back"]
                 self.gui.update_listbox(options)
-                self.gui.action_button.config(command = lambda:self.newGameMenu(self.gui.actions_box))
+                self.gui.action_button.config(command = lambda:self.newGameMenu())
 
             case 1:
                 self.loadGameMenu()
             case 2:
                 quit()
 
-    def newGameMenu(self, listbox): # Menu that lets user choose starter pokemon
+    def newGameMenu(self): # Menu that lets user choose starter pokemon
         """
-        :param listbox: tk.Listbox
         calls method: startMenuActions()
         method calls: firstStart()
         """        
-        userInput = checkOptionIndex(listbox)
+        actionIndex = self.gui.checkOptionIndex()
         print("New Game")
         playerTeam = []
-        match userInput: # Can be made into a function/method
+        match actionIndex: # Can be made into a function/method
             case 0:
                 playerTeam.append(importPokemonByName(self.file, "Bulbasaur"))
                 self.player = Player(self.username, playerTeam)
@@ -209,7 +207,7 @@ class MainGame:
             options = ["Team", "Quit"]
             self.gui.update_listbox(options)
 
-            self.gui.action_button.config(command=lambda:self.mapUiMenu(self.gui.actions_box))
+            self.gui.action_button.config(command=lambda:self.mapUiMenu())
 
             self.gui.create_dpad()
             self.gui.up.config(command = lambda: (self.map.movePlayer(0, -1), self.gui.refresh_map(self.map), self.startEncounter()))
@@ -217,14 +215,12 @@ class MainGame:
             self.gui.left.config(command = lambda: (self.map.movePlayer(-1, 0), self.gui.refresh_map(self.map), self.startEncounter()))
             self.gui.right.config(command = lambda: (self.map.movePlayer(1, 0), self.gui.refresh_map(self.map), self.startEncounter()))
     
-    def mapUiMenu(self, listbox): # Formats ui when player wants to quit or change team during the map interface
+    def mapUiMenu(self): # Formats ui when player wants to quit or change team during the map interface
         """
-        :param listbox: tk.Listbox()
         calls method: mapGui()
         method calls: changeTeamOrder(), quitMenu(), mapGui()
         """
-        userInput = listbox.curselection()
-        userInput = userInput[0]
+        userInput = self.gui.checkOptionIndex()
         options = []
         self.gui.disable_map()
         self.gui.destroy_dpad()
@@ -235,45 +231,50 @@ class MainGame:
                     options.append(f"{e.name} - {e.stats.hp}/{e.stats.maxHp}")
                 options.append("Back")
                 self.gui.update_listbox(options)
-                self.gui.action_button.config(command = lambda:self.changeTeamOrder(self.gui.actions_box, options))
+                self.gui.action_button.config(command = lambda:self.changeTeamOrder(options))
 
             case 1: # Quit
-                self.gui.create_input_field()
-                self.gui.create_back_button()
-                self.gui.write_line("Avoid special characters such as '. , ? !' or numbers '1 2 3 4'\n"\
-                                    "Entering previous file name will override old saves\n"\
-                                    "File type is not needed (ex: .txt, .csv etc)")
+                self.gui.create_back_button()                
+                self.quitMenu()
 
-                self.gui.action_button.config(command = lambda:self.quitMenu(self.gui.input_field.get()))
-                self.gui.back_button.config(command=lambda:(self.mapGui(), self.gui.back_button.destroy())) # Probably bad logic
-
-    def changeTeamOrder(self, listbox, options): # Logic that changes the team order
+    def changeTeamOrder(self, options): # Logic that changes the team order
         """
-        :param listbox: tk.Listbox()
         :param options: [string, ...]
         calls method: mainUiMenu()
         method calls: mapGui()
         """
-        userInput = checkOptionIndex(listbox, options)
-        if not userInput:
+        actionIndex = self.gui.checkOptionIndex(options)
+        if actionIndex == "Back":
             self.mapGui()
-        print(f"User input - changeTeamOrder(): {userInput}")
+            return
+        print(f"User input - changeTeamOrder(): {actionIndex}")
 
-        if self.player.team[userInput].fainted == True:
+        if self.player.team[actionIndex].fainted == True:
             self.gui.write_line("Cannot use fainted pokemon")
         else:        
-            self.player.changeActivePokemon(userInput)
+            self.player.changeActivePokemon(actionIndex)
             self.gui.write_line(f"Active pokemon is now {self.player.activePokemon}")
             self.mapGui()
 
-    def quitMenu(self, filename): # Calls exportPlayerTeam() function to save then quits
+    def quitMenu(self): 
+        self.gui.create_input_field()
+        self.gui.write_line("Avoid special characters such as '. , ? !' or numbers '1 2 3 4'\n"\
+                            "Entering previous file name will override old saves, not entering anything will not save\n"\
+                            "File type is not needed (ex: .txt, .csv etc)")
+
+        self.gui.action_button.config(command = lambda:self.quittingGame(self.gui.input_field.get()))
+        self.gui.back_button.config(command=lambda:(self.mapGui(), self.gui.back_button.destroy())) # Probably bad logic
+
+    def quittingGame(self, filename): # Calls exportPlayerTeam() function to save then quits
         """
         :param filename: string (file formatted)
         calls method: mapUiMenu(), encounterStopped()
         """
+        if filename == "":
+            quit()
         exportPlayerTeam(self.player.team, filename)    
         self.gui.write_line("Press enter again to close program")    
-        self.gui.action_button.config(command=lambda:quit())
+        self.gui.action_button.config(command=lambda:quit())       
 
     def startEncounter(self): # Chance to instantiate and start an encounter
         """ Should 
@@ -300,7 +301,7 @@ class MainGame:
         method calls: mapGui(), evolveMsg()
         """
         print(f"Enemy defeat: {self.encounterInstance.playerWin}")
-        self.gui.write_line("Encounter finished") # Remove later
+        self.gui.write_line("Encounter finished =================================") # Remove later
         print(f"Player win: {self.encounterInstance.playerWin}")
         print(f"Game over: {self.encounterInstance.gameOver}")
 
@@ -328,12 +329,7 @@ class MainGame:
                 self.mapGui()
         # Game over logic
         elif self.encounterInstance.gameOver == True:
-            self.gui.write_line("Game Over, enter teamname to save your team")
-            self.gui.write_line("Avoid special characters such as '. , ? !' or numbers '1 2 3 4'\n"\
-                                "Entering previous file name will override old saves\n"\
-                                "File type is not needed (ex: .txt, .csv etc)")
-            self.gui.create_input_field()
-            self.gui.action_button.config(command = lambda:self.quitMenu(self.gui.input_field.get()))
+            self.quitMenu()
 
         else: # Player run
             self.mapGui()    
@@ -424,18 +420,9 @@ def getEvolution(pokemonList, pokemonObj, file): # Checks a pokemons next evolut
             newPokemonObj = importPokemonByName(file, pokemonName)
     return newPokemonObj
 
-def checkOptionIndex(listbox, options = []): # Checks if user selected an action MOVE TO GUI?
-    optionIndex = listbox.curselection() # Gives tuple of indices
-    if len(optionIndex) == 0:
-        raise ValueError("No actions selected")
-    elif options[int(optionIndex[0])] == "Back":
-        print("Back")
-        return False
-    return optionIndex[0]
-
 def main(): # Instantiates a game and starts
     game = MainGame("data.txt") # Hardcoded file :thumbs_up:
     game.start()
     game.gui.root.mainloop()
 
-main()
+main() # Calls main() :skull_emoji:
