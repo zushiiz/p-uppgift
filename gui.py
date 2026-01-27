@@ -136,6 +136,17 @@ class GUI():
         self.input_field = tk.Entry(self._actions_frame)
         self.input_field.pack()
 
+    def checkOptionIndex(self, options = []): # Checks if user selected an action
+        print(f"options in {options}")
+        optionIndex = self.actions_box.curselection() # Gives tuple of indices
+        if len(optionIndex) == 0:
+            raise ValueError("No actions selected")
+        elif len(options) > 0:
+            if options[int(optionIndex[0])] == "Back":
+                print("Back")
+                return "Back"
+        return optionIndex[0]
+
     """Map methods - terminal_frame"""
     def show_map(self, map): # Displays map and refreshes
         """
