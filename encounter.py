@@ -39,7 +39,7 @@ class Encounter:
                 
         options = ["Fight", "Pokemon", "Items", "Run"]
         self.gui.update_listbox(options)
-        self.gui.action_button.config(command = lambda:self.playerAction(self.gui.actions_box))        
+        self.gui.action_button.config(command = lambda:self.playerAction())        
 
     def start(self): # Starts encounter logic
         """
@@ -61,7 +61,7 @@ class Encounter:
         # options listbox
         options = ["Fight", "Pokemon", "Items", "Run"]
         self.gui.update_listbox(options)
-        self.gui.action_button.config(command = lambda:self.playerAction(self.gui.actions_box))
+        self.gui.action_button.config(command = lambda:self.playerAction())
 
     def backToEncounterMenu(self): # Takes you back to the first encounter ui
         """
@@ -70,29 +70,24 @@ class Encounter:
         """
         options = ["Fight", "Pokemon", "Items", "Run"]
         self.gui.update_listbox(options)
-        self.gui.action_button.config(command = lambda:self.playerAction(self.gui.actions_box))
+        self.gui.action_button.config(command = lambda:self.playerAction())
 
-    def playerAction(self, listbox): # Interface logic that calls the one of the four actions players can (fight, swap, items, run) do
+    def playerAction(self): # Interface logic that calls the one of the four actions players can (fight, swap, items, run) do
         """
         :param listbox: tk.Listbox()
         calls method: nextTurn(), start(), backToEncounter()
         method calls: playerFightMenu(), playerSwapMenu(), playerItemsMenu(), stopEncounter()
         """
-
-        userInput = listbox.curselection()
-        if len(userInput) == 0:
-            raise ValueError("No actions selected")
-        userInput = userInput[0]
-
-        print(f"User input - playerAction(): {userInput}")
+        actionIndex = self.gui.checkOptionIndex()
+        print(f"Option index - playerAction(): {actionIndex}")
         options = []        
-        match userInput:
+        match actionIndex:
             case 0: # Fight
                 for e in self.player.activePokemon.movelist:
                     options.append(e)
                 options.append("Back")
                 self.gui.update_listbox(options)
-                self.gui.action_button.config(command = lambda:self.playerFightMenu(self.gui.actions_box, options))
+                self.gui.action_button.config(command = lambda:self.playerFightMenu(options))
                 
             case 1: # Team
                 for e in self.player.team:
@@ -102,36 +97,31 @@ class Encounter:
                         options.append(f"{e.name} - {e.stats.hp}/{e.stats.maxHp}")
                 options.append("Back")
                 self.gui.update_listbox(options)
-                self.gui.action_button.config(command = lambda:self.playerSwapMenu(self.gui.actions_box, options))
+                self.gui.action_button.config(command = lambda:self.playerSwapMenu(options))
 
             case 2: # Items
                 options = [f"Healing potion - {self.player.potions}/10", f"Pokeballs - {self.player.pokeballs}/10", "Back"]
                 self.gui.update_listbox(options)
-                self.gui.action_button.config(command = lambda:self.playerItemsMenu(self.gui.actions_box, options))
+                self.gui.action_button.config(command = lambda:self.playerItemsMenu(options))
 
             case 3: # Run
                 self.gui.write_line("You've fled from the encounter")
                 self.stopEncounter()
 
             case _: # Should never run, but just in case
-                raise IndexError(f"Invalid action index: {userInput}")
+                raise IndexError(f"Invalid action index: {actionIndex}")
 
-    def playerFightMenu(self, listbox, options): # Fight logic
+    def playerFightMenu(self, options): # Fight logic 
         """
-        :param listbox: tk.Listbox()
         :param options: [string, ...]
         calls method: playerAction()
-        method calls: 
+        method calls:  stopEncounter(), nextTurn()
         """
-        userInput = listbox.curselection()
-        if len(userInput) == 0:
-            raise ValueError("No actions selected")
-        if options[int(userInput[0])] == "Back":
+        atkIndex = self.gui.checkOptionIndex(options)
+        print(f"optionIndex - playerFightMenu() - {atkIndex}")
+        if atkIndex == "Back":
             self.backToEncounterMenu()
             return
-        
-        atkIndex = userInput[0]
-        print(f"User input - playerFightMenu(): {atkIndex}")
 
         enemyAtkIndex = random.randint(0, (len(self.opponent.movelist)-1))
         faintedObject = None # Redundant
@@ -167,63 +157,51 @@ class Encounter:
                 for e in self.player.team:
                     options.append(f"{e.name} - {e.stats.hp}/{e.stats.maxHp}")
                 self.gui.update_listbox(options)
-                self.gui.action_button.config(command = lambda:self.playerSwapMenu(self.gui.actions_box, options, faint = True))
+                self.gui.action_button.config(command = lambda:self.playerSwapMenu(options, faint = True))
                 
                 print(f"{self.player} sent out {self.playerPokemon}")
         else:
             self.nextTurn()
         
-    def playerSwapMenu(self, listbox, options, faint = False): # Swapping out active pokemon 
+    def playerSwapMenu(self, options, faint = False): # Swapping out active pokemon 
         # There is one instance where fainted pokemon can be sent out...
         """
-        :param listbox: tk.Listbox()
         :param options: [string, ...]
         :param faint: boolean
         calls method: playerAction(), playerFightMenu()
         method calls: backToEncounter(), enemyAttack(), nextTurn()
         """
-        userInput = listbox.curselection()
-        
-        if len(userInput) == 0:
-            raise ValueError("No actions selected")
-        
-        if options[int(userInput[0])] == "Back":
+        actionIndex = self.gui.checkOptionIndex(options)
+        print(f"Option index - playerSwapMenu() - {actionIndex}")
+        if actionIndex == "Back":
             self.backToEncounterMenu()
             return
         
-        userInput = userInput[0]
-        print(f"User input - playerSwapMenu(): {userInput}")
-        
-        if self.player.team[userInput].fainted == True:
+        if self.player.team[actionIndex].fainted == True:
             self.gui.write_line("Cannot send out fainted pokemon")
         
         else:
-            self.player.swapOption(userInput)
+            self.player.swapOption(actionIndex)
             self.playerPokemon = self.player.activePokemon
             self.gui.write_line(f"{self.player.name} sent out {self.playerPokemon}")
             if not faint:
                 self.enemyAttack()
             self.nextTurn()
     
-    def playerItemsMenu(self, listbox, options): # Interface logic to either choose potion or pokeball
+    def playerItemsMenu(self, options): # Interface logic to either choose potion or pokeball
         """
-        :param listbox: tk.Listbox()
         :param options: [string, ...]
         calls method: playerAction()
         method calls: potionsMenu(), nextTurn()
         """
-        userInput = listbox.curselection()
-        
-        if len(userInput) == 0:
-            raise ValueError("No actions selected")
-        
-        if options[int(userInput[0])] == "Back":
+        actionIndex = self.gui.checkOptionIndex(options)
+        print(f"Option index - playerItemsMenu() - {actionIndex}")
+        if actionIndex == "Back":
             self.backToEncounterMenu()
-            return                
+            return
         
-        userInput = userInput[0]
         options = []
-        match userInput:
+        match actionIndex:
             case 0:
                 if self.player.potions <= 0:
                     self.gui.write_line("You don't have any potions left")
@@ -233,39 +211,38 @@ class Encounter:
                     options.append(f"{e.name} - {e.stats.hp}/{e.stats.maxHp}")
                 options.append("Back")
                 self.gui.update_listbox(options)
-                self.gui.action_button.config(command = lambda:self.potionMenu(self.gui.actions_box, options))
+                self.gui.action_button.config(command = lambda:self.potionMenu(options))
             
             case 1:
                 if self.player.pokeballs <= 0:
                     self.gui.write_line("You don't have any pokeballs left")
                     return                
                 self.catchPokemon()
-                self.nextTurn()
+                if self.stop == False:
+                    self.nextTurn()
 
-    def potionMenu(self, listbox, options): # Calls methods to heal the chosen pokemon
+    def potionMenu(self, options): # Calls methods to heal the chosen pokemon
         """
-        :param listbox: tk.Listbox()
         :param options: [string, ...]
         calls method: playerItemsMenu() 
         method calls: backToEncounter(), enemyAttack(), nextTurn()
         """        
-        userInput = listbox.curselection()
-        if len(userInput) == 0:
-            raise ValueError("No actions selected")
-        if options[int(userInput[0])] == "Back":
+        actionIndex = self.gui.checkOptionIndex(options)
+        print(f"Option index - potionMenu() - {actionIndex}")        
+        if actionIndex == "Back":
             self.backToEncounterMenu()
             return
-        userInput = userInput[0]
 
-        if self.player.team[userInput].fainted == True: #Silvertape fix
+        if self.player.team[actionIndex].fainted == True: #Silvertape fix
             self.gui.write_line("Pokemon has already fainted, cannot heal")
             return
         else:
-            pokemon = self.player.team[userInput]
+            pokemon = self.player.team[actionIndex]
             self.player.healPokemon(pokemon)
             self.gui.write_line(f"Healed {pokemon.name}! Hp: {pokemon.stats.hp}/{pokemon.stats.maxHp}")
             self.enemyAttack()
-            self.nextTurn()
+            if self.stop == False:
+                self.nextTurn()
 
     def checkPlayerStatus(self): # Checks status on all pokemon in players team
         """
@@ -319,11 +296,16 @@ class Encounter:
                 return None, False
             
     def catchPokemon(self): # Chance to add enemy pokemon to team and end encounter
+        if len(self.player.team) >= 6:
+            self.gui.write_line("You cannot have more than 6 pokemon!")
+            return
+
         self.gui.write_line(f"{self.player} used Pokeball!")
         if random.randint(1, 4) == 1:
             self.gui.write_line(f"{self.opponent} was caught!")
             self.player.team.append(self.opponent) # No limit
             self.stopEncounter()
+            return
         else:
             self.gui.write_line(f"{self.opponent} escaped!")
             self.enemyAttack()
@@ -339,24 +321,25 @@ class Encounter:
         print(self.playerPokemon.stats)
         print(self.opponent.stats)
 
-        # if self.playerPokemon.stats.hp <= 0: THIS LOGIC CURRENTLY DOES NOT WORK 
-        #     if self.checkPlayerStatus():
-        #         print("Player defeat. Stopping encounter")
+        if self.playerPokemon.stats.hp <= 0: #THIS LOGIC CURRENTLY DOES NOT WORK 
+            if self.checkPlayerStatus():
+                print("Player defeat. Stopping encounter")
 
-        #         self.gui.write_line(f"All {self.player}'s pokemon have died")
-        #         self.gameOver = True
-        #         self.stopEncounter()
-        #     else:
+                self.gui.write_line(f"All {self.player}'s pokemon have died")
+                self.gameOver = True
+                self.stopEncounter()
+                return
+            else:
 
-        #         self.gui.write_line(f"{self.playerPokemon} has fainted!\n"\
-        #                             "Who would you like to send out?")
-        #         options = []
-        #         for e in self.player.team:
-        #             options.append(f"{e.name} - {e.stats.hp}/{e.stats.maxHp}")
-        #         self.gui.update_listbox(options)
-        #         self.gui.action_button.config(command = lambda:self.playerSwapMenu(self.gui.actions_box, options, faint = True))
+                self.gui.write_line(f"{self.playerPokemon} has fainted!\n"\
+                                    "Who would you like to send out?")
+                options = []
+                for e in self.player.team:
+                    options.append(f"{e.name} - {e.stats.hp}/{e.stats.maxHp}")
+                self.gui.update_listbox(options)
+                self.gui.action_button.config(command = lambda:self.playerSwapMenu(options, faint = True))
                 
-        #         print(f"{self.player} sent out {self.playerPokemon}")                                
+                print(f"{self.player} sent out {self.playerPokemon}")                                
 
     def stopEncounter(self): # Stops encounter and runs onStop function in game.py
         """
