@@ -74,7 +74,6 @@ class Encounter:
 
     def playerAction(self): # Interface logic that calls the one of the four actions players can (fight, swap, items, run) do
         """
-        :param listbox: tk.Listbox()
         calls method: nextTurn(), start(), backToEncounter()
         method calls: playerFightMenu(), playerSwapMenu(), playerItemsMenu(), stopEncounter()
         """
